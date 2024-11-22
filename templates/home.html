@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Video Background -->
+<div class="video-background">
+    <video autoplay loop muted class="video-bg">
+        <source src="{{ url_for('static', filename='videos/1.mp4') }}" type="video/mp4">
+        <!-- Fallback message if video is not supported -->
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+<div class="text-center mb-4">
+    <!-- Optional space for extra elements like icons or text -->
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="display-4 mb-4 text-primary animate__animated animate__fadeIn">Welcome to Language Exchange</h1>
+        <p class="lead mb-4 text-muted animate__animated animate__fadeIn">Connect with language learners worldwide, practice your skills, and make new friends!</p>
+        <div class="d-grid gap-2 d-md-block mb-5">
+            {% if current_user.is_authenticated %}
+                <!-- No button shown for authenticated users -->
+                <!-- You can add a Discover button or any other content here if needed -->
+            {% else %}
+                <!-- Sign Up Button with Icon -->
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-md-2 animate__animated animate__bounceIn">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+                <!-- Login Button with Icon -->
+                <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg animate__animated animate__bounceIn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Key Features Section -->
+<section class="why-join py-5" style="background-color: #f7f7f7;">
+    <div class="container text-center">
+        <h2 class="mb-4 text-dark">Why Join Language Exchange?</h2>
+        <div class="row">
+            <!-- Global Community Section -->
+            <div class="col-lg-4 col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-globe-americas fa-4x mb-3 text-primary"></i> 
+                        <h5 class="card-title text-primary">Global Community</h5>
+                        <p class="card-text">Connect with language enthusiasts from all over the world. Practice languages with native speakers and learn about diverse cultures.</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Interactive Learning Section -->
+            <div class="col-lg-4 col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-comments fa-4x mb-3 text-primary"></i> 
+                        <h5 class="card-title text-primary">Interactive Learning</h5>
+                        <p class="card-text">Enjoy our chat rooms, video calls, and language games to enhance your learning experience while having fun.</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Personalized Profiles Section -->
+            <div class="col-lg-4 col-md-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-circle fa-4x mb-3 text-primary"></i> 
+                        <h5 class="card-title text-primary">Personalized Profiles</h5>
+                        <p class="card-text">Create a unique profile, track your progress, and set learning goals to stay motivated on your language journey.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-4 text-dark">How It Works</h2>
+        <div class="row">
+            <!-- Step 1: Sign Up -->
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-plus fa-4x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Sign Up</h4>
+                        <p class="card-text">Create an account in seconds and set up your profile to start matching with language partners.</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Step 2: Find a Partner -->
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-search fa-4x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Find a Partner</h4>
+                        <p class="card-text">Use our search tools to find partners who share your language goals and are interested in your native language.</p>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Step 3: Start Learning -->
+            <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chalkboard-teacher fa-4x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Start Learning</h4>
+                        <p class="card-text">Engage in chats, calls, and exercises. Track your progress and celebrate every milestone.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-4 text-dark">What Our Members Say</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <blockquote class="blockquote text-center mt-4 border-left pl-4 py-3">
+                    <p class="mb-0">"Language Exchange connected me with native speakers and boosted my Spanish!"</p>
+                    <footer class="blockquote-footer mt-3">John, <cite title="Source Title">USA</cite></footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4 mb-4">
+                <blockquote class="blockquote text-center mt-4 border-left pl-4 py-3">
+                    <p class="mb-0">"I found language partners who made learning English enjoyable and effective!"</p>
+                    <footer class="blockquote-footer mt-3">Maria, <cite title="Source Title">Brazil</cite></footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4 mb-4">
+                <blockquote class="blockquote text-center mt-4 border-left pl-4 py-3">
+                    <p class="mb-0">"The community is very supportive. I love the tools that make learning so interactive!"</p>
+                    <footer class="blockquote-footer mt-3">Liu, <cite title="Source Title">China</cite></footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final Call to Action -->
+<section class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h2>Ready to Start Your Language Journey?</h2>
+        <p class="lead mb-4">Join our community of language enthusiasts and start learning today!</p>
+        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg animate__animated animate__fadeIn">
+            <i class="fas fa-user-plus"></i> Create Your Free Account
+        </a>
+    </div>
+</section>
+
+{% endblock %}
