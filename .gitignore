@@ -1,1 +1,5 @@
-.env
+# Ignore database files
+*.sqlite3      # SQLite database files
+*.db           # General database files
+*.sql          # SQL dump files
+.env           # Environment variable files
