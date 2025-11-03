@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Game Over - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="mb-4">Game Over!</h1>
+    <h3>Your final score is: {{ score }}</h3>
+    <a href="{{ url_for('reset_game') }}" class="btn btn-primary mt-3">Play Again</a>
+</div>
+{% endblock %}

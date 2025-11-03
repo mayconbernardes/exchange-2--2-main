@@ -1,0 +1,67 @@
+{
+  "levels": [
+    {
+      "id": 1,
+      "title": "Fruits",
+      "items": [
+        {"image": "games/orange.jpg", "word": "Orange"},
+        {"image": "games/banana.jpg", "word": "Banana"},
+        {"image": "games/apple.jpg", "word": "Apple"}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Animals",
+      "items": [
+        {"image": "games/dog.jpg", "word": "Dog"},
+        {"image": "games/cat.jpg", "word": "Cat"},
+        {"image": "games/bird.jpg", "word": "Bird"}
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Objects",
+      "items": [
+        {"image": "games/chair.jpg", "word": "Chair"},
+        {"image": "games/fork.jpg", "word": "Fork"},
+        {"image": "games/bike.jpg", "word": "Bike"}
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Technology",
+      "items": [
+        {"image": "games/cellphone.jpg", "word": "Cellphone"},
+        {"image": "games/notebook.jpg", "word": "Notebook"},
+        {"image": "games/watch.jpg", "word": "Watch"}
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Accessories",
+      "items": [
+        {"image": "games/glasses.jpg", "word": "Glasses"},
+        {"image": "games/wallet.jpg", "word": "Wallet"},
+        {"image": "games/airplane.jpg", "word": "Airplane"}
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Office",
+      "items": [
+        {"image": "games/notebook.jpg", "word": "Notebook"},
+        {"image": "games/chair.jpg", "word": "Chair"},
+        {"image": "games/glasses.jpg", "word": "Glasses"}
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Mixed",
+      "items": [
+        {"image": "games/airplane.jpg", "word": "Airplane"},
+        {"image": "games/wallet.jpg", "word": "Wallet"},
+        {"image": "games/bike.jpg", "word": "Bike"}
+      ]
+    }
+  ]
+}

@@ -30,7 +30,19 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-class ForumPostForm(FlaskForm):
+class LessonForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Post')
+    text = TextAreaField('Text', validators=[DataRequired()])
+    audio = FileField('Audio', validators=[FileAllowed(['mp3'], 'MP3 files only!')])
+    target_language = StringField('Target Language', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class GameForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    image = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
+    correct_word = StringField('Correct Word', validators=[DataRequired()])
+    incorrect_words = StringField('Incorrect Words (comma-separated)', validators=[DataRequired()])
+    target_language = StringField('Target Language', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+

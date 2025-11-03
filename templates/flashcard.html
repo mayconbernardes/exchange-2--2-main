@@ -1,13 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcard</title>
-</head>
-<body>
-    <h1>Flashcard: {{ flashcard.term }}</h1>
-    <p>Definition: {{ flashcard.definition }}</p>
-    <p>Created by: {{ flashcard.user.username }}</p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Flashcards - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Your Flashcards</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-lg mb-4">
+                <div class="card-header bg-primary text-white">
+                    Create New Flashcard
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.front.label(class="form-label") }}
+                            {{ form.front(class="form-control") }}
+                            {% for error in form.front.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.back.label(class="form-label") }}
+                            {{ form.back(class="form-control") }}
+                            {% for error in form.back.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Flashcard</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white">
+                    Your Existing Flashcards
+                </div>
+                <div class="card-body">
+                    {% if flashcards %}
+                        <div class="list-group">
+                            {% for flashcard in flashcards %}
+                                <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ flashcard.word }}</h5>
+                                    </div>
+                                    <p class="mb-1">{{ flashcard.translation }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>You haven't created any flashcards yet. Start by adding one!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

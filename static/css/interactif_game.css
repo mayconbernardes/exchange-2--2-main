@@ -1,0 +1,131 @@
+/* General Game Container */
+.game-header {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 1rem;
+}
+
+/* Image Grid (Drop Zones) */
+#image-grid .image-container {
+    position: relative;
+    border: 3px dashed #ccc;
+    border-radius: 8px;
+    padding: 5px;
+    transition: all 0.3s ease;
+    min-height: 150px; /* Garante altura mínima */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+}
+
+#image-grid .image-container img {
+    max-width: 100%;
+    max-height: 120px; /* Limita a altura da imagem */
+    border-radius: 4px;
+}
+
+/* Word Bank (Draggable Items) */
+#word-bank .card-header {
+    font-weight: bold;
+    background-color: #f8f9fa;
+}
+
+#word-bank .word-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+#word-bank .word-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#word-bank .word-card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+    background-color: #e9ecef;
+}
+
+/* Drag and Drop States */
+.image-container.drag-over {
+    border-color: #007bff;
+    background-color: #e9f5ff;
+}
+
+/* Feedback Styles */
+.image-container .image-feedback {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Correct State */
+.image-container.correct {
+    border-color: #28a745;
+    background-color: #e9f7ef;
+}
+
+.image-container.correct .image-feedback {
+    background-color: #28a745;
+    opacity: 1;
+}
+
+.word-card.correct {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+    cursor: default;
+}
+
+/* Incorrect State */
+.image-container.incorrect {
+    border-color: #dc3545;
+    background-color: #fbe9eb;
+    animation: shake 0.5s;
+}
+
+.image-container.incorrect .image-feedback {
+    background-color: #dc3545;
+    opacity: 1;
+}
+
+.word-card.incorrect {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+/* Shake Animation for Incorrect Drop */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Game Over Modal */
+#gameOverModal .modal-content {
+    border-radius: 15px;
+}
+
+#gameOverModal .modal-header {
+    border-bottom: none;
+}
+
+#gameOverModal .modal-footer {
+    border-top: none;
+}

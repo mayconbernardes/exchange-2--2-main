@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Game - {{ level.title }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/interactif_game.css') }}">
+
+<div class="container mt-5">
+    <div class="game-header text-center mb-4">
+        <h1>{{ level.title }} (Level {{ level_id }})</h1>
+        <p class="lead">Arraste a palavra correta para cada imagem.</p>
+        <div class="score-board">
+            <strong>Pontuação: <span id="score">0</span></strong>
+        </div>
+    </div>
+
+    {% if game_items %}
+    <div class="row">
+        <!-- Coluna das Imagens (Drop Zones) -->
+        <div class="col-md-8">
+            <div id="image-grid" class="row">
+                {% for item in game_items %}
+                <div class="col-md-4 mb-4">
+                    <div class="image-container" 
+                         data-word="{{ item.word }}" 
+                         ondragover="event.preventDefault()" 
+                         ondrop="drop(event)">
+                        <img src="{{ url_for('static', filename='images/' + item.image) }}" 
+                             class="img-fluid rounded" 
+                             alt="{{ item.word }}">
+                        <div class="image-feedback"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Coluna das Palavras (Draggable) -->
+        <div class="col-md-4">
+            <div id="word-bank" class="card">
+                <div class="card-header">
+                    Palavras
+                </div>
+                <div class="card-body">
+                    {% for word in words %}
+                    <div class="word-card" draggable="true" ondragstart="drag(event)">
+                        {{ word }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-center">Nenhum item de jogo disponível para este nível.</p>
+    {% endif %}
+
+    <!-- Modal de Fim de Jogo -->
+    <div class="modal fade" id="gameOverModal" tabindex="-1" aria-labelledby="gameOverModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gameOverModalLabel">Nível Concluído!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Sua pontuação final é: <span id="final-score"></span></h4>
+                    <p id="feedback-message"></p>
+                </div>
+                <div class="modal-footer" id="modal-footer-buttons">
+                    <!-- Buttons will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let score = 0;
+    let correctMatches = 0;
+    const totalItems = {{ game_items|length }};
+    const currentLevel = {{ level_id }};
+    const totalLevels = {{ total_levels }};
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.innerText);
+        ev.target.classList.add('dragging');
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        const data = ev.dataTransfer.getData("text");
+        const wordCard = Array.from(document.querySelectorAll('.word-card')).find(card => card.innerText === data);
+        const dropZone = ev.currentTarget;
+        const correctWord = dropZone.dataset.word;
+        const feedbackElement = dropZone.querySelector('.image-feedback');
+
+        if (dropZone.classList.contains('correct')) {
+            return; // Already correctly matched
+        }
+
+        if (data === correctWord) {
+            score += 10;
+            correctMatches++;
+            
+            dropZone.classList.add('correct');
+            wordCard.classList.add('correct');
+            feedbackElement.innerText = 'Correto!';
+            
+            wordCard.draggable = false;
+            wordCard.style.position = 'absolute';
+            wordCard.style.bottom = '10px';
+            wordCard.style.left = '50%';
+            wordCard.style.transform = 'translateX(-50%)';
+            dropZone.appendChild(wordCard);
+
+        } else {
+            score -= 5;
+            dropZone.classList.add('incorrect');
+            wordCard.classList.add('incorrect');
+            feedbackElement.innerText = 'Errado!';
+
+            setTimeout(() => {
+                dropZone.classList.remove('incorrect');
+                wordCard.classList.remove('incorrect');
+                feedbackElement.innerText = '';
+            }, 1000);
+        }
+
+        document.getElementById('score').innerText = score;
+        
+        if (correctMatches === totalItems) {
+            showGameOverModal();
+        }
+    }
+    
+    document.querySelectorAll('.word-card').forEach(card => {
+        card.addEventListener('dragend', (ev) => {
+            ev.target.classList.remove('dragging');
+        });
+    });
+
+    function showGameOverModal() {
+        document.getElementById('final-score').innerText = score;
+        const percentage = (correctMatches / totalItems) * 100;
+        let message = '';
+        if (percentage === 100) {
+            message = 'Excelente! Você acertou todas!';
+        } else if (percentage >= 70) {
+            message = 'Ótimo trabalho!';
+        } else if (percentage >= 50) {
+            message = 'Bom esforço, continue tentando!';
+        } else {
+            message = 'Não desista, a prática leva à perfeição!';
+        }
+        document.getElementById('feedback-message').innerText = message;
+
+        const modalFooter = document.getElementById('modal-footer-buttons');
+        modalFooter.innerHTML = ''; // Clear previous buttons
+
+        if (currentLevel < totalLevels) {
+            const nextLevelButton = document.createElement('a');
+            nextLevelButton.href = `/game/${currentLevel + 1}`;
+            nextLevelButton.className = 'btn btn-primary';
+            nextLevelButton.innerText = 'Próximo Nível';
+            modalFooter.appendChild(nextLevelButton);
+        } else {
+            const playAgainButton = document.createElement('a');
+            playAgainButton.href = "{{ url_for('game_start') }}";
+            playAgainButton.className = 'btn btn-primary';
+            playAgainButton.innerText = 'Jogar Novamente';
+            modalFooter.appendChild(playAgainButton);
+            document.getElementById('gameOverModalLabel').innerText = 'Fim de Jogo!';
+        }
+
+        const dashboardButton = document.createElement('a');
+        dashboardButton.href = "{{ url_for('dashboard') }}";
+        dashboardButton.className = 'btn btn-secondary';
+        dashboardButton.innerText = 'Voltar ao Dashboard';
+        modalFooter.appendChild(dashboardButton);
+        
+        var myModal = new bootstrap.Modal(document.getElementById('gameOverModal'), {
+            keyboard: false
+        });
+        myModal.show();
+    }
+</script>
+{% endblock %}

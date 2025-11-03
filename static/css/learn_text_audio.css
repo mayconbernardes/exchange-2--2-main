@@ -1,0 +1,122 @@
+body {
+    background-color: #f8f9fa;
+    padding-top: 0;
+    margin: 0;
+}
+
+/* Adicione este estilo para compensar a altura da navbar */
+.main-content {
+    padding-top: 70px; /* Ajuste conforme a altura da sua navbar */
+}
+
+.audio-player-container {
+    position: sticky;
+    top: 70px; /* Ajuste conforme a altura da sua navbar */
+    z-index: 1000;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 0;
+    width: 100%;
+}
+
+/* Resto dos seus estilos permanece igual... */
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 15px;
+}
+.player-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+.back-button {
+    background: none;
+    border: none;
+    color: #6e8efb;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+.audio-player {
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: block;
+}
+.transcription-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+.transcription-header {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+.transcription-header h2 {
+    color: #6e8efb;
+    margin-bottom: 5px;
+}
+.transcription-content {
+    line-height: 1.8;
+    color: #495057;
+    font-size: 1.1rem;
+    padding-right: 10px;
+    min-height: 300px;
+    overflow-y: auto;
+}
+.lesson-info {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.lesson-title {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+.lesson-description {
+    color: #666;
+    font-size: 1.1rem;
+}
+/* Estilo para a barra de rolagem */
+.transcription-content::-webkit-scrollbar {
+    width: 8px;
+}
+.transcription-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.transcription-content::-webkit-scrollbar-thumb {
+    background: #6e8efb;
+    border-radius: 10px;
+}
+.transcription-content::-webkit-scrollbar-thumb:hover {
+    background: #5a7df4;
+}
+@media (max-width: 768px) {
+    .audio-player {
+        width: 95%;
+    }
+    .transcription-container {
+        margin: 10px auto;
+        padding: 15px;
+    }
+    .transcription-content {
+        min-height: 200px;
+    }
+    /* Ajuste para dispositivos móveis */
+    .main-content {
+        padding-top: 60px; /* Menor para mobile */
+    }
+    .audio-player-container {
+        top: 60px;
+    }
+}

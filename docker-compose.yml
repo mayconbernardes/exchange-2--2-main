@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: interchange
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d interchange"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    restart: always
+    ports:
+      - "5006:5006"
+    environment:
+      DATABASE_URL: postgresql://root:root@db:5432/interchange
+      SECRET_KEY: KJHY8!65LM@kLMQ# # Replace with a strong secret key
+    depends_on:
+      db:
+        condition: service_healthy
+    command: bash -c "flask db upgrade && flask run --host=0.0.0.0 --port=5006"
+
+volumes:
+  db_data:

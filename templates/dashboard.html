@@ -3,94 +3,39 @@
 {% block title %}Dashboard - {{ super() }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div class="position-sticky pt-3">
-                <div class="text-center mb-4">
-                    {% if current_user.profile_picture %}
-                        <img src="{{ url_for('static', filename='images/' + current_user.profile_picture) }}" alt="Profile Picture" class="img-fluid rounded-circle profile-picture mb-3">
-                    {% else %}
-                        <img src="{{ url_for('static', filename='images/default_profile.png') }}" alt="Default Profile Picture" class="img-fluid rounded-circle profile-picture mb-3">
-                    {% endif %}
-                    <h5>{{ current_user.username }}</h5>
-                    <p class="text-muted small">{{ current_user.native_language }} → {{ current_user.learning_language }}</p>
+<div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg text-center p-4">
+                <!-- Profile Picture -->
+                {% if current_user.profile_picture %}
+                    <img src="{{ url_for('static', filename='images/' + current_user.profile_picture) }}" 
+                         alt="Profile Picture" 
+                         class="img-fluid rounded-circle profile-picture mb-3 mx-auto" 
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default_profile.png') }}" 
+                         alt="Default Profile Picture" 
+                         class="img-fluid rounded-circle profile-picture mb-3 mx-auto" 
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                {% endif %}
+
+                <!-- Username and Languages -->
+                <h3 class="mb-1">{{ current_user.username }}</h3>
+                <p class="text-muted mb-3">{{ current_user.native_language }} → {{ current_user.learning_language }}</p>
+
+                <!-- Action Buttons -->
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('profile') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-circle me-2"></i> Profile
+                    </a>
+                    <a href="{{ url_for('flashcards') }}" class="btn btn-success btn-lg">
+                        <i class="fas fa-layer-group me-2"></i> Flashcards
+                    </a>
+                    <!-- Add more buttons as needed -->
                 </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#profile">
-                            <i class="fas fa-user-circle"></i> Profile
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#flashcards">
-                            <i class="fas fa-layer-group"></i> Flashcards
-                        </a>
-                    </li>
-                    <!-- Add more navigation items as needed -->
-                </ul>
             </div>
-        </nav>
-
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
-            </div>
-
-            <!-- Profile Section -->
-            <section id="profile" class="mb-5">
-                <h3 class="mb-3">Update Profile</h3>
-                <form method="POST" action="{{ url_for('dashboard') }}" enctype="multipart/form-data">
-                    {{ profile_form.hidden_tag() }}
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ profile_form.username.label(class="form-label") }}
-                            {{ profile_form.username(class="form-control") }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ profile_form.profile_picture.label(class="form-label") }}
-                            {{ profile_form.profile_picture(class="form-control") }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ profile_form.native_language.label(class="form-label") }}
-                            {{ profile_form.native_language(class="form-control") }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ profile_form.learning_language.label(class="form-label") }}
-                            {{ profile_form.learning_language(class="form-control") }}
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        {{ profile_form.interests.label(class="form-label") }}
-                        {{ profile_form.interests(class="form-control") }}
-                    </div>
-                    <button type="submit" name="update_profile" class="btn btn-primary">Update Profile</button>
-                </form>
-            </section>
-
-            <!-- Flashcards Section -->
-            <section id="flashcards" class="mb-5">
-                <h3 class="mb-3">Create Flashcard</h3>
-                <form method="POST" action="{{ url_for('dashboard') }}">
-                    {{ flashcard_form.hidden_tag() }}
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            {{ flashcard_form.front.label(class="form-label") }}
-                            {{ flashcard_form.front(class="form-control") }}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            {{ flashcard_form.back.label(class="form-label") }}
-                            {{ flashcard_form.back(class="form-control") }}
-                        </div>
-                    </div>
-                    <button type="submit" name="create_flashcard" class="btn btn-success">Create Flashcard</button>
-                </form>
-            </section>
-        </main>
+        </div>
     </div>
 </div>
 {% endblock %}

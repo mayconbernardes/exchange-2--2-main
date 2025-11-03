@@ -1,5 +1,64 @@
-{% if user.profile_picture %}
-    <img src="{{ url_for('static', filename='images/' + user.profile_picture) }}" alt="{{ user.username }}'s Profile Picture" class="img-thumbnail">
-{% else %}
-    <img src="{{ url_for('static', filename='images/default_profile.png') }}" alt="Default Profile Picture" class="img-thumbnail">
-{% endif %}
+{% extends "base.html" %}
+
+{% block title %}Profile - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Your Profile</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control") }}
+                            {% for error in form.username.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.native_language.label(class="form-label") }}
+                            {{ form.native_language(class="form-control") }}
+                            {% for error in form.native_language.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.learning_language.label(class="form-label") }}
+                            {{ form.learning_language(class="form-control") }}
+                            {% for error in form.learning_language.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.interests.label(class="form-label") }}
+                            {{ form.interests(class="form-control") }}
+                            {% for error in form.interests.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.profile_picture.label(class="form-label") }}
+                            {{ form.profile_picture(class="form-control") }}
+                            {% for error in form.profile_picture.errors %}
+                                <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="{{ url_for('static', filename='images/' + (current_user.profile_picture if current_user.profile_picture else 'default.jpg')) }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture" style="width: 150px; height: 150px; object-fit: cover;">
+            <h3>{{ current_user.username }}</h3>
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+            <p><strong>Native Language:</strong> {{ current_user.native_language }}</p>
+            <p><strong>Learning Language:</strong> {{ current_user.learning_language }}</p>
+            <p><strong>Interests:</strong> {{ current_user.interests }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

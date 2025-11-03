@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Learn with Text and Audio - {{ super() }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/learn_text_audio.css') }}">
+
+<!-- Adicione uma div wrapper para o conteúdo principal -->
+<div class="main-content">
+    <!-- Container do player de áudio (fixo no topo) -->
+    <div class="audio-player-container">
+        <div class="player-header">
+            <button class="back-button" onclick="window.location.href='{{ url_for('home') }}'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h3 class="player-title">Language Lesson</h3>
+            <div style="width: 40px;"></div> <!-- Espaço reservado para balancear o layout -->
+        </div>
+        <audio controls class="audio-player">
+            <source src="{{ url_for('static', filename='audio/introducingYourFriends.mp3') }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- Informações da lição -->
+    <div class="lesson-info">
+        <h1 class="lesson-title">Language Lesson</h1>
+        <p class="lesson-description">Listen and read along to improve your language skills</p>
+    </div>
+
+    <!-- Container da transcrição -->
+    <div class="transcription-container">
+        <div class="transcription-header">
+            <h2>Transcription</h2>
+            <p>Read along while listening to the audio</p>
+        </div>
+        <div class="transcription-content">
+            {% if transcription %}
+                {{ transcription|safe }}
+            {% else %}
+                <p>Loading transcription...</p>
+                <p>If you see this message for more than a few seconds, there might be an issue with loading the transcription file.</p>
+                <p>Expected file location: static/doc/introducingYourFriends.txt</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Verifica se o áudio está carregando corretamente
+document.addEventListener('DOMContentLoaded', function() {
+    const audio = document.querySelector('audio');
+    if (audio) {
+        audio.addEventListener('error', function() {
+            alert('Error loading audio file. Please check if the file exists at: static/audio/introducingYourFriends.mp3');
+        });
+        // Verifica se o áudio pode ser reproduzido
+        audio.addEventListener('canplay', function() {
+            console.log('Audio file loaded successfully');
+        });
+        // Destaca o texto durante a reprodução
+        const transcriptionContent = document.querySelector('.transcription-content');
+        if (transcriptionContent) {
+            audio.addEventListener('play', function() {
+                transcriptionContent.style.color = '#6e8efb';
+            });
+            audio.addEventListener('pause', function() {
+                transcriptionContent.style.color = '#495057';
+            });
+        }
+    }
+});
+</script>
+{% endblock %}

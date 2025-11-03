@@ -21,8 +21,12 @@
         <p class="lead mb-4 text-muted animate__animated animate__fadeIn">Connect with language learners worldwide, practice your skills, and make new friends!</p>
         <div class="d-grid gap-2 d-md-block mb-5">
             {% if current_user.is_authenticated %}
-                <!-- No button shown for authenticated users -->
-                <!-- You can add a Discover button or any other content here if needed -->
+                <a href="{{ url_for('learn_text_audio') }}" class="btn btn-primary btn-lg me-md-2 animate__animated animate__bounceIn">
+                    <i class="fas fa-headphones-alt"></i> Learn with Text & Audio
+                </a>
+                <a href="{{ url_for('game_start') }}" class="btn btn-outline-primary btn-lg animate__animated animate__bounceIn">
+                    <i class="fas fa-gamepad"></i> Interactive Game
+                </a>
             {% else %}
                 <!-- Sign Up Button with Icon -->
                 <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-md-2 animate__animated animate__bounceIn">
@@ -41,36 +45,25 @@
 <section class="why-join py-5" style="background-color: #f7f7f7;">
     <div class="container text-center">
         <h2 class="mb-4 text-dark">Why Join Language Exchange?</h2>
-        <div class="row">
-            <!-- Global Community Section -->
+        <div class="row justify-content-center">
+            <!-- Learn with Text & Audio Section -->
             <div class="col-lg-4 col-md-6 mb-4 animate__animated animate__fadeInUp">
                 <div class="card shadow-lg border-0">
                     <div class="card-body text-center">
-                        <i class="fas fa-globe-americas fa-4x mb-3 text-primary"></i> 
-                        <h5 class="card-title text-primary">Global Community</h5>
-                        <p class="card-text">Connect with language enthusiasts from all over the world. Practice languages with native speakers and learn about diverse cultures.</p>
+                        <i class="fas fa-headphones-alt fa-4x mb-3 text-primary"></i> 
+                        <h5 class="card-title text-primary">Learn with Text & Audio</h5>
+                        <p class="card-text">Dive into authentic texts with synchronized audio. Improve your listening, reading, and comprehension skills by following along with native speakers.</p>
                     </div>
                 </div>
             </div>
     
-            <!-- Interactive Learning Section -->
+            <!-- Interactive Game Section -->
             <div class="col-lg-4 col-md-6 mb-4 animate__animated animate__fadeInUp">
                 <div class="card shadow-lg border-0">
                     <div class="card-body text-center">
-                        <i class="fas fa-comments fa-4x mb-3 text-primary"></i> 
-                        <h5 class="card-title text-primary">Interactive Learning</h5>
-                        <p class="card-text">Enjoy our chat rooms, video calls, and language games to enhance your learning experience while having fun.</p>
-                    </div>
-                </div>
-            </div>
-    
-            <!-- Personalized Profiles Section -->
-            <div class="col-lg-4 col-md-6 mb-4 animate__animated animate__fadeInUp">
-                <div class="card shadow-lg border-0">
-                    <div class="card-body text-center">
-                        <i class="fas fa-user-circle fa-4x mb-3 text-primary"></i> 
-                        <h5 class="card-title text-primary">Personalized Profiles</h5>
-                        <p class="card-text">Create a unique profile, track your progress, and set learning goals to stay motivated on your language journey.</p>
+                        <i class="fas fa-gamepad fa-4x mb-3 text-primary"></i> 
+                        <h5 class="card-title text-primary">Interactive Game</h5>
+                        <p class="card-text">Make learning fun with our interactive game! Match images with their correct word names to quickly expand your vocabulary and reinforce your knowledge.</p>
                     </div>
                 </div>
             </div>
@@ -82,36 +75,36 @@
 <section class="how-it-works py-5 bg-light">
     <div class="container text-center">
         <h2 class="mb-4 text-dark">How It Works</h2>
-        <div class="row">
+        <div class="row justify-content-center">
             <!-- Step 1: Sign Up -->
             <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
                 <div class="card shadow-lg border-0">
                     <div class="card-body text-center">
                         <i class="fas fa-user-plus fa-4x mb-3 text-primary"></i>
                         <h4 class="card-title text-primary">Sign Up</h4>
-                        <p class="card-text">Create an account in seconds and set up your profile to start matching with language partners.</p>
+                        <p class="card-text">Create an account in seconds and set up your profile to start your language learning journey.</p>
                     </div>
                 </div>
             </div>
     
-            <!-- Step 2: Find a Partner -->
+            <!-- Step 2: Learn with Text & Audio -->
             <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
                 <div class="card shadow-lg border-0">
                     <div class="card-body text-center">
-                        <i class="fas fa-search fa-4x mb-3 text-primary"></i>
-                        <h4 class="card-title text-primary">Find a Partner</h4>
-                        <p class="card-text">Use our search tools to find partners who share your language goals and are interested in your native language.</p>
+                        <i class="fas fa-headphones-alt fa-4x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Learn with Text & Audio</h4>
+                        <p class="card-text">Access a library of texts with synchronized audio. Read along, listen to native pronunciation, and improve your comprehension with real-world content.</p>
                     </div>
                 </div>
             </div>
     
-            <!-- Step 3: Start Learning -->
+            <!-- Step 3: Play Interactive Games -->
             <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
                 <div class="card shadow-lg border-0">
                     <div class="card-body text-center">
-                        <i class="fas fa-chalkboard-teacher fa-4x mb-3 text-primary"></i>
-                        <h4 class="card-title text-primary">Start Learning</h4>
-                        <p class="card-text">Engage in chats, calls, and exercises. Track your progress and celebrate every milestone.</p>
+                        <i class="fas fa-gamepad fa-4x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Play Interactive Games</h4>
+                        <p class="card-text">Challenge yourself with fun, interactive games. Match images to their correct word names to build and test your vocabulary in an engaging way.</p>
                     </div>
                 </div>
             </div>
