@@ -26,7 +26,7 @@ from flask_mail import Mail
 from email_validator import validate_email, EmailNotValidError
 from werkzeug.exceptions import RequestEntityTooLarge
 from models import User, Flashcard, TextAudioLesson, InteractiveGame, db  # Ensure these models are in models.py
-from forms import UserProfileForm, FlashcardForm, LoginForm, RegistrationForm  # Ensure these forms are in forms.py
+from forms import UserProfileForm, FlashcardForm, LoginForm, RegistrationForm, LessonForm, GameForm # Ensure these forms are in forms.py
 
 # Initialize Flask app
 app = Flask(__name__, static_folder='static', static_url_path='/static')

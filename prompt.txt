@@ -1,126 +1,48 @@
-Jogo Interativo de Associação de Palavras e Imagens em Flask
+NameError
+NameError: name 'LessonForm' is not defined
 
-Crie um jogo interativo de associação de palavras e imagens utilizando Python Flask, HTML5, CSS3 (ou Tailwind) e JavaScript.
-O design deve ser moderno, responsivo e gamificado, adequado tanto para desktop quanto mobile.
-O objetivo do jogador é associar corretamente cada imagem à sua palavra correspondente.
-O jogo deve incluir:
+Traceback (most recent call last)
+File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 1498, in __call__
+    ) -> cabc.Iterable[bytes]:Open an interactive python shell in this frame
+        """The WSGI server calls the Flask application object as the
+        WSGI application. This calls :meth:`wsgi_app`, which can be
+        wrapped to apply middleware.
+        """
+        return self.wsgi_app(environ, start_response)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/flask_socketio/__init__.py", line 43, in __call__
+return super(_SocketIOMiddleware, self).__call__(environ,
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/engineio/middleware.py", line 74, in __call__
+return self.wsgi_app(environ, start_response)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 1476, in wsgi_app
+response = self.handle_exception(e)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
+response = self.full_dispatch_request()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
+rv = self.handle_user_exception(e)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
+rv = self.dispatch_request()
+     ^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
+return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/opt/anaconda3/lib/python3.12/site-packages/flask_login/utils.py", line 290, in decorated_view
+return current_app.ensure_sync(func)(*args, **kwargs)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/Users/mayconbernardes/Desktop/exchange-2--2-main/app.py", line 300, in edit_lesson
+form = LessonForm(obj=lesson)
+       ^^^^^^^^^^
+NameError: name 'LessonForm' is not defined
+The debugger caught an exception in your WSGI application. You can now look at the traceback which led to the error.
+To switch between the interactive traceback and the plaintext one, you can click on the "Traceback" headline. From the text traceback you can also create a paste of it. For code execution mouse-over the frame you want to debug and click on the console icon on the right side.
 
-🧩 Estrutura e Regras
+You can execute arbitrary Python code in the stack frames and there are some extra helpers available for introspection:
 
-Cada nível contém um conjunto de imagens (por exemplo, 6, 8 ou 10) e uma lista de palavras correspondentes.
-
-As palavras são embaralhadas aleatoriamente e apresentadas ao lado ou abaixo das imagens.
-
-O jogador deve arrastar e soltar (drag & drop) as palavras sobre as imagens corretas.
-
-Ao final, o sistema calcula automaticamente a pontuação (score):
-
-+10 pontos para cada correspondência correta.
-
--5 pontos para cada tentativa errada (opcional).
-
-Exibir um score final e mensagem de feedback (por exemplo, “Excelente!”, “Bom trabalho!”, “Tente novamente!”).
-
-🏗️ Lógica e Backend
-
-Usar Flask para servir os níveis e pontuações.
-
-Estruturar o jogo com templates Jinja2.
-
-Armazenar as informações (níveis, imagens, palavras, score) em um arquivo JSON, SQLite ou PostgreSQL.
-
-Criar rotas:
-
-/game/<level> → Página do nível.
-
-/submit-score → Recebe o score via POST (AJAX/Fetch) e salva o resultado.
-
-/leaderboard → Mostra o ranking dos jogadores (com Flask + banco).
-
-🎨 Design
-
-Layout moderno estilo “cards” com sombras suaves e cores vivas (modo claro e escuro).
-
-Animações leves de transição (por exemplo, com animate.css ou Framer Motion no front).
-
-Barra superior com o nível atual, progresso e botão “Próximo nível”.
-
-Exibir feedback visual instantâneo (cor verde para certo, vermelho para errado).
-
-🚀 Funcionalidades Extras
-
-Sistema de níveis crescentes de dificuldade:
-
-Nível 1: palavras simples (frutas, animais, objetos).
-
-Nível 2: frases curtas ou expressões.
-
-Nível 3: vocabulário técnico ou avançado.
-
-Timer opcional para aumentar a dificuldade.
-
-Ranking com nomes dos jogadores e melhores pontuações.
-
-Sons curtos de feedback (acerto/erro).
-
-Modo educacional: botão “Mostrar resposta correta”.
-
-🧠 Tecnologias sugeridas
-
-Frontend: HTML5, TailwindCSS (ou Bootstrap 5), JavaScript puro ou React.
-
-Backend: Flask, SQLite/PostgreSQL, Jinja2 templates.
-
-Armazenamento de mídia: pasta /static/images ou CDN.
-
-Controle de estado do jogo: via LocalStorage ou backend Flask.
-
-📁 Estrutura sugerida do projeto
-/game_app
-├── app.py
-├── static/
-│   ├── images/
-│   ├── css/
-│   └── js/
-├── templates/
-│   ├── index.html
-│   ├── game.html
-│   ├── leaderboard.html
-│   └── layout.html
-├── data/
-│   └── levels.json
-└── database.db
-
-🧩 Exemplo de estrutura JSON para níveis
-{
-  "levels": [
-    {
-      "id": 1,
-      "title": "Frutas",
-      "items": [
-        {"image": "apple.png", "word": "Maçã"},
-        {"image": "banana.png", "word": "Banana"},
-        {"image": "grape.png", "word": "Uva"}
-      ]
-    },
-    {
-      "id": 2,
-      "title": "Animais",
-      "items": [
-        {"image": "dog.png", "word": "Cachorro"},
-        {"image": "cat.png", "word": "Gato"},
-        {"image": "bird.png", "word": "Pássaro"}
-      ]
-    }
-  ]
-}
-
-⚙️ Extras para UX
-
-Adicionar barra de progresso animada e contagem regressiva (se houver tempo).
-
-Opção de modo treino (sem penalização de erro).
-
-Opção multilíngue (ex: português / inglês / francês).
-
-Suporte para sons e efeitos visuais leves.
+dump() shows all variables in the frame
+dump(obj) dumps all that's known about the object
+Brought to you by DON'T PANIC, your friendly Werkzeug powered traceback interpreter.

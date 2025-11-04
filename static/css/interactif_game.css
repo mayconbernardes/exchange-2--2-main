@@ -129,3 +129,7 @@
 #gameOverModal .modal-footer {
     border-top: none;
 }
+
+.modal-backdrop {
+    background-color: transparent !important;
+}
