@@ -14,15 +14,26 @@
         <div class="mb-3">
             {{ form.text.label(class="form-label") }}
             <!-- Quill Editor Container -->
-            <div id="editor-container" style="height: 300px; background: white;">
+            <div id="editor-container"
+                style="height: 300px; background: white; border: 1px solid #ced4da; border-radius: 0.375rem;">
                 {{ form.text.data|safe if form.text.data else '' }}
             </div>
             <!-- Hidden textarea to store Quill HTML for POST -->
-            {{ form.text(style="display:none;", id="lesson-text-input") }}
+            {{ form.text(style="display:none; visibility:hidden;", id="lesson-text-input") }}
+            {% if form.text.errors %}
+            {% for error in form.text.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.audio.label(class="form-label") }}
             {{ form.audio(class="form-control") }}
+            {% if form.audio.errors %}
+            {% for error in form.audio.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.target_language.label(class="form-label") }}
@@ -51,11 +62,24 @@
         }
     });
 
-    // On form submit, copy Quill HTML to the actual hidden textarea
-    var form = document.getElementById('lesson-form');
-    form.onsubmit = function() {
-        var textInput = document.getElementById('lesson-text-input');
-        textInput.value = quill.root.innerHTML;
+    // Sync content on every change to ensure the hidden textarea is always updated
+    quill.on('text-change', function() {
+        var html = quill.root.innerHTML;
+        // If the editor is empty, Quill might still have <p><br></p>. 
+        // We handle empty state to satisfy DataRequired if needed.
+        if (html === '<p><br></p>') html = '';
+        document.getElementById('lesson-text-input').value = html;
+    });
+
+    // Populate the hidden input initially
+    document.getElementById('lesson-text-input').value = quill.root.innerHTML;
+
+    // Double check on form submit
+    document.getElementById('lesson-form').onsubmit = function() {
+        var html = quill.root.innerHTML;
+        if (html === '<p><br></p>') html = '';
+        document.getElementById('lesson-text-input').value = html;
+        return true;
     };
 </script>
 {% endblock %}
