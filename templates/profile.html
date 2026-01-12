@@ -3,107 +3,96 @@
 {% block title %}{{ t('profile_title') }} - {{ super() }}{% endblock %}
 
 {% block content %}
-<div class="container py-5 animate-fade">
-    <div class="row g-5">
-        <div class="col-lg-8">
-            <div class="glass-card">
-                <h2 class="fw-bold mb-4 text-gradient">{{ t('profile_title') }}</h2>
-                <form method="POST" enctype="multipart/form-data">
-                    {{ form.hidden_tag() }}
-                    <div class="row">
-                        <div class="col-md-12 mb-4">
-                            {{ form.username.label(class="form-label text-muted small fw-bold") }}
-                            {{ form.username(class="form-control bg-dark border-secondary text-white p-3 rounded-3") }}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control") }}
                             {% for error in form.username.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger">{{ error }}</span><br>
                             {% endfor %}
                         </div>
-                        <div class="col-md-6 mb-4">
-                            {{ form.native_language.label(class="form-label text-muted small fw-bold") }}
-                            {{ form.native_language(class="form-select bg-dark border-secondary text-white p-3
-                            rounded-3") }}
+                        <div class="mb-3">
+                            {{ form.native_language.label(class="form-label") }}
+                            {{ form.native_language(class="form-control") }}
                             {% for error in form.native_language.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger">{{ error }}</span><br>
                             {% endfor %}
                         </div>
-                        <div class="col-md-6 mb-4">
-                            {{ form.learning_language.label(class="form-label text-muted small fw-bold") }}
-                            {{ form.learning_language(class="form-select bg-dark border-secondary text-white p-3
-                            rounded-3") }}
+                        <div class="mb-3">
+                            {{ form.learning_language.label(class="form-label") }}
+                            {{ form.learning_language(class="form-control") }}
                             {% for error in form.learning_language.errors %}
-                            <span class="text-danger small">{{ error }}</span>
+                            <span class="text-danger">{{ error }}</span><br>
                             {% endfor %}
                         </div>
-                        <div class="col-md-12 mb-4">
-                            {{ form.interests_selection.label(class="form-label text-muted small fw-bold") }}
-                            <div class="p-3 bg-dark border border-secondary rounded-3">
+                        <div class="mb-3">
+                            {{ form.interests_selection.label(class="form-label") }}
+                            <div class="form-control" style="height: auto;">
                                 {% for subfield in form.interests_selection %}
                                 <div class="form-check form-check-inline">
                                     {{ subfield(class="form-check-input") }}
-                                    {{ subfield.label(class="form-check-label text-muted small") }}
+                                    {{ subfield.label(class="form-check-label") }}
                                 </div>
                                 {% endfor %}
                             </div>
+                            {% for error in form.interests_selection.errors %}
+                            <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
                         </div>
-                        <div class="col-md-12 mb-4">
-                            {{ form.profile_picture.label(class="form-label text-muted small fw-bold") }}
-                            {{ form.profile_picture(class="form-control bg-dark border-secondary text-white p-3
-                            rounded-3") }}
+                        <div class="mb-3">
+                            {{ form.interests.label(class="form-label") }}
+                            {{ form.interests(class="form-control") }}
+                            {% for error in form.interests.errors %}
+                            <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
                         </div>
-                    </div>
-                    <button type="submit" class="btn-premium btn-primary-modern w-100 py-3 mt-3">
-                        <i class="fas fa-save me-2"></i> {{ t('profile_update') }}
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="glass-card text-center">
-                <div class="position-relative d-inline-block mb-4">
-                    <img src="{{ url_for('static', filename='images/' + (current_user.profile_picture if current_user.profile_picture else 'default.jpg')) }}"
-                        class="rounded-circle border border-4 border-primary shadow-lg" alt="Profile Picture"
-                        style="width: 180px; height: 180px; object-fit: cover;">
-                    <div
-                        class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-2 border border-4 border-dark">
-                        <i class="fas fa-camera text-white"></i>
-                    </div>
-                </div>
-
-                <h3 class="fw-bold mb-1 text-white">{{ current_user.username }}</h3>
-                <p class="text-muted mb-4">{{ current_user.email }}</p>
-
-                <div class="row g-2 mb-4 text-start">
-                    <div class="col-12 p-3 bg-dark border border-secondary rounded-3 mb-2">
-                        <div class="text-muted small fw-bold">{{ t('profile_native') }}</div>
-                        <div class="text-white">{{ language_map.get(current_user.native_language,
-                            current_user.native_language) }}</div>
-                    </div>
-                    <div class="col-12 p-3 bg-dark border border-secondary rounded-3 mb-2">
-                        <div class="text-muted small fw-bold">{{ t('profile_learning') }}</div>
-                        <div class="text-white">{{ language_map.get(current_user.learning_language,
-                            current_user.learning_language) }}</div>
-                    </div>
-                    <div class="col-12 p-3 bg-primary bg-opacity-10 border border-primary rounded-3 text-center">
-                        <div class="text-primary small fw-bold">{{ t('profile_total_points') }}</div>
-                        <div class="display-5 fw-bold text-white">{{ current_user.total_points if
-                            current_user.total_points else 0 }}</div>
-                    </div>
-                </div>
-
-                <div class="d-grid gap-3">
-                    <a href="{{ url_for('flashcards') }}" class="btn-premium btn-outline-modern w-100">
-                        <i class="fas fa-layer-group"></i> {{ t('profile_manage_flashcards') }}
-                    </a>
-                    <a href="{{ url_for('logout') }}" class="btn-premium btn-outline-modern w-100"
-                        style="border-color: rgba(244, 63, 94, 0.3); color: var(--accent);">
-                        <i class="fas fa-sign-out-alt"></i> {{ t('nav_logout') }}
-                    </a>
+                        <div class="mb-3">
+                            {{ form.profile_picture.label(class="form-label") }}
+                            {{ form.profile_picture(class="form-control") }}
+                            {% for error in form.profile_picture.errors %}
+                            <span class="text-danger">{{ error }}</span><br>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">{{ t('profile_update') }}</button>
+                    </form>
                 </div>
             </div>
         </div>
+        <div class="col-md-4 text-center">
+            <img src="{{ url_for('static', filename='images/' + (current_user.profile_picture if current_user.profile_picture else 'default.jpg')) }}"
+                class="img-fluid rounded-circle mb-3" alt="Profile Picture"
+                style="width: 150px; height: 150px; object-fit: cover;">
+            <h3>{{ current_user.username }}</h3>
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+            <p><strong>{{ t('profile_native') }}:</strong> {{ language_map.get(current_user.native_language,
+                current_user.native_language) }}</p>
+            <p><strong>{{ t('profile_learning') }}:</strong> {{ language_map.get(current_user.learning_language,
+                current_user.learning_language) }}</p>
+            <p><strong>{{ t('profile_interests') }}:</strong> {{ current_user.interests }}</p>
+            <div class="mb-3 p-2 bg-primary text-white rounded shadow-sm">
+                <strong>{{ t('profile_total_points') }}:</strong> <span class="h4 ms-2 fw-bold">{{
+                    current_user.total_points if
+                    current_user.total_points else 0 }}</span>
+            </div>
+            <hr>
+
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('flashcards') }}" class="btn btn-success">
+                    <i class="fas fa-layer-group me-2"></i> {{ t('profile_manage_flashcards') }}
+                </a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i> {{ t('nav_logout') }}
+                </a>
+            </div>
+        </div>
+
+
     </div>
 </div>
-{% endblock %}
-
 {% endblock %}

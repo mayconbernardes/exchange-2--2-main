@@ -4,20 +4,15 @@
 *.sql          # SQL dump files
 .env           # Environment variable files
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Virtual environments
-env/
+# Python environments
 venv/
+env/
 myenv/
-ENV/
-
-# Flask
-instance/
+__pycache__/
+*.pyc
 flask_session/
 
-# OS
+# OS files
 .DS_Store
+static/.DS_Store
+templates/.DS_Store
