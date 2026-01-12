@@ -5,17 +5,6 @@
 <section class="hero d-flex align-items-center justify-content-center text-center text-white">
   <div class="overlay"></div>
 
-  <!-- Language Selector specifically for Home Page -->
-  <div class="lang-selector-home animate__animated animate__fadeInRight">
-    <a href="{{ url_for('set_language', lang='en') }}"
-      class="lang-btn {% if current_lang == 'en' %}active{% endif %} shadow-lg" title="English">
-      <span class="flag">🇬🇧</span> <span class="label">EN</span>
-    </a>
-    <a href="{{ url_for('set_language', lang='fr') }}"
-      class="lang-btn {% if current_lang == 'fr' %}active{% endif %} shadow-lg" title="Français">
-      <span class="flag">🇫🇷</span> <span class="label">FR</span>
-    </a>
-  </div>
 
 
   <div class="container position-relative z-2 py-5">
@@ -223,47 +212,6 @@
     z-index: 1;
   }
 
-  /* Language Selector on Home */
-  .lang-selector-home {
-    position: absolute;
-    top: 110px;
-    right: 40px;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .lang-btn {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none !important;
-    font-weight: 500;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-  }
-
-  .lang-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    transform: translateX(-8px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-
-  .lang-btn.active {
-    background: #fff;
-    color: #1e1b4b;
-    border-color: #fff;
-    font-weight: 700;
-  }
 
 
   /* Premium Buttons */
