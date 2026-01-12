@@ -13,7 +13,7 @@
         </div>
         <div class="mb-3">
             {{ form.text.label(class="form-label") }}
-            {{ form.text(class="form-control", rows=10) }}
+            {{ form.text(class="form-control", rows=10, id="lesson-text-editor") }}
         </div>
         <div class="mb-3">
             {{ form.audio.label(class="form-label") }}
@@ -28,4 +28,13 @@
         </div>
     </form>
 </div>
+
+<!-- Rich Text Editor -->
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace('lesson-text-editor', {
+        height: 400,
+        removeButtons: 'PasteFromWord' // Optional customization
+    });
+</script>
 {% endblock %}
