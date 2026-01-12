@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4">{{ title }}</h1>
-    <form method="POST" action="" enctype="multipart/form-data">
+    <form id="lesson-form" method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div class="mb-3">
             {{ form.title.label(class="form-label") }}
@@ -13,7 +13,12 @@
         </div>
         <div class="mb-3">
             {{ form.text.label(class="form-label") }}
-            {{ form.text(class="form-control", rows=10, id="lesson-text-editor") }}
+            <!-- Quill Editor Container -->
+            <div id="editor-container" style="height: 300px; background: white;">
+                {{ form.text.data|safe if form.text.data else '' }}
+            </div>
+            <!-- Hidden textarea to store Quill HTML for POST -->
+            {{ form.text(style="display:none;", id="lesson-text-input") }}
         </div>
         <div class="mb-3">
             {{ form.audio.label(class="form-label") }}
@@ -29,12 +34,28 @@
     </form>
 </div>
 
-<!-- Rich Text Editor -->
-<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<!-- Quill.js - Simple, Secure, and Free -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
 <script>
-    CKEDITOR.replace('lesson-text-editor', {
-        height: 400,
-        removeButtons: 'PasteFromWord' // Optional customization
+    var quill = new Quill('#editor-container', {
+        theme: 'snow',
+        placeholder: 'Escreva o conteúdo da lição aqui...',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
+        }
     });
+
+    // On form submit, copy Quill HTML to the actual hidden textarea
+    var form = document.getElementById('lesson-form');
+    form.onsubmit = function() {
+        var textInput = document.getElementById('lesson-text-input');
+        textInput.value = quill.root.innerHTML;
+    };
 </script>
 {% endblock %}
