@@ -71,24 +71,6 @@
                     </li>
                     {% endif %}
 
-                    <!-- Language Switcher -->
-                    <li class="nav-item dropdown ms-lg-3">
-                        <a class="nav-link dropdown-toggle btn btn-outline-light btn-sm px-3 text-white" href="#"
-                            id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {% if session.get('lang') == 'fr' %}
-                            🇫🇷 FR
-                            {% else %}
-                            🇬🇧 EN
-                            {% endif %}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="langDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='en') }}">🇬🇧
-                                    English</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('set_language', lang='fr') }}">🇫🇷
-                                    Français</a></li>
-                        </ul>
-                    </li>
-
                 </ul>
             </div>
         </div>
