@@ -8,25 +8,26 @@
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div class="mb-3">
-            {{ form.title.label(class="form-label") }}
-            {{ form.title(class="form-control") }}
+            {{ form.level_id.label(class="form-label") }}
+            {{ form.level_id(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.level_title.label(class="form-label") }}
+            {{ form.level_title(class="form-control") }}
         </div>
         <div class="mb-3">
             {{ form.image.label(class="form-label") }}
             {{ form.image(class="form-control") }}
         </div>
         <div class="mb-3">
-            {{ form.correct_word.label(class="form-label") }}
-            {{ form.correct_word(class="form-control") }}
-        </div>
-        <div class="mb-3">
-            {{ form.incorrect_words.label(class="form-label") }}
-            {{ form.incorrect_words(class="form-control") }}
+            {{ form.word.label(class="form-label") }}
+            {{ form.word(class="form-control") }}
         </div>
         <div class="mb-3">
             {{ form.target_language.label(class="form-label") }}
             {{ form.target_language(class="form-control") }}
         </div>
+
         <div class="mb-3">
             {{ form.submit(class="btn btn-primary") }}
         </div>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('audio_title_main') }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/audio.css') }}">
+
+<div class="main-content">
+    <div class="audio-player-container">
+        <div class="player-header">
+            <button class="back-button" onclick="window.location.href='{{ url_for('audio') }}'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h3 class="player-title">{{ t('audio_lesson_heading') }}</h3>
+            <div style="width: 40px;"></div>
+        </div>
+        <audio controls class="audio-player">
+            <source src="{{ url_for('static', filename=lesson.audio_file_path) }}" type="audio/mpeg">
+            {{ t('audio_browser_error') }}
+        </audio>
+    </div>
+
+
+    <div class="lesson-info">
+        <h1 class="lesson-title">{{ lesson.title }}</h1>
+        <p class="lesson-description">{{ t('lessons_lang_label') }}: {{ lesson.target_language }}</p>
+    </div>
+
+    <div class="transcription-container">
+        <div class="transcription-header">
+            <h2>{{ t('audio_transcription_title') }}</h2>
+            <p>{{ t('audio_transcription_subtitle') }}</p>
+        </div>
+        <div class="transcription-content">
+            {% if transcription %}
+            {{ transcription|safe }}
+            {% else %}
+            <p>{{ t('audio_loading_transcription') }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const audio = document.querySelector('audio');
+        if (audio) {
+            audio.addEventListener('error', function () {
+                alert("{{ t('audio_error_alert') }}");
+            });
+            const transcriptionContent = document.querySelector('.transcription-content');
+            if (transcriptionContent) {
+                audio.addEventListener('play', function () {
+                    transcriptionContent.style.color = '#6e8efb';
+                });
+                audio.addEventListener('pause', function () {
+                    transcriptionContent.style.color = '#495057';
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

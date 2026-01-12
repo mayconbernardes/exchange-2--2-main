@@ -3,3 +3,21 @@
 *.db           # General database files
 *.sql          # SQL dump files
 .env           # Environment variable files
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+venv/
+myenv/
+ENV/
+
+# Flask
+instance/
+flask_session/
+
+# OS
+.DS_Store

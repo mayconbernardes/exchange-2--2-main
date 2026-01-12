@@ -1,48 +1,22 @@
-NameError
-NameError: name 'LessonForm' is not defined
+- rename dashboard to profile and put the logout inside of profile.
 
-Traceback (most recent call last)
-File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 1498, in __call__
-    ) -> cabc.Iterable[bytes]:Open an interactive python shell in this frame
-        """The WSGI server calls the Flask application object as the
-        WSGI application. This calls :meth:`wsgi_app`, which can be
-        wrapped to apply middleware.
-        """
-        return self.wsgi_app(environ, start_response)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/flask_socketio/__init__.py", line 43, in __call__
-return super(_SocketIOMiddleware, self).__call__(environ,
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/engineio/middleware.py", line 74, in __call__
-return self.wsgi_app(environ, start_response)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 1476, in wsgi_app
-response = self.handle_exception(e)
-           ^^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 1473, in wsgi_app
-response = self.full_dispatch_request()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 882, in full_dispatch_request
-rv = self.handle_user_exception(e)
-     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 880, in full_dispatch_request
-rv = self.dispatch_request()
-     ^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/flask/app.py", line 865, in dispatch_request
-return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/opt/anaconda3/lib/python3.12/site-packages/flask_login/utils.py", line 290, in decorated_view
-return current_app.ensure_sync(func)(*args, **kwargs)
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-File "/Users/mayconbernardes/Desktop/exchange-2--2-main/app.py", line 300, in edit_lesson
-form = LessonForm(obj=lesson)
-       ^^^^^^^^^^
-NameError: name 'LessonForm' is not defined
-The debugger caught an exception in your WSGI application. You can now look at the traceback which led to the error.
-To switch between the interactive traceback and the plaintext one, you can click on the "Traceback" headline. From the text traceback you can also create a paste of it. For code execution mouse-over the frame you want to debug and click on the console icon on the right side.
+- page home wide blue
 
-You can execute arbitrary Python code in the stack frames and there are some extra helpers available for introspection:
+- quero poder colocar novas licoes audio e textos 
 
-dump() shows all variables in the frame
-dump(obj) dumps all that's known about the object
-Brought to you by DON'T PANIC, your friendly Werkzeug powered traceback interpreter.
+e mais imagens e suas traducoes no jogo interativo diretamente na parte admin para nao precisar ir diretamente no codigo.
+
+- Take of this area : Ready to Start Your Language Journey?
+Join thousands of learners already improving their skills worldwide.
+
+- add privacity policy and legal mentions
+
+
+
+renforce email password
+
+and securise it. peça numero minimo de caracteres e caracteres especiais.
+
+por exemplo na parte do interactive game tem um erro de segurança, se eu colocar o id da licao seguinte direto no navegador eu tenho acesso, nao pode ser assim, apenas tenho que ter acesso uma vez a primeira licao terminada. por exemple : corriger : game/7 do not go directly
+
+

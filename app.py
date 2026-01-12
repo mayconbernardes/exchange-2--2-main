@@ -26,7 +26,9 @@ from flask_mail import Mail
 from email_validator import validate_email, EmailNotValidError
 from werkzeug.exceptions import RequestEntityTooLarge
 from models import User, Flashcard, TextAudioLesson, InteractiveGame, db  # Ensure these models are in models.py
-from forms import UserProfileForm, FlashcardForm, LoginForm, RegistrationForm, LessonForm, GameForm # Ensure these forms are in forms.py
+from forms import UserProfileForm, FlashcardForm, LoginForm, RegistrationForm, LessonForm, GameForm, INTERESTS, LANGUAGES # Ensure these forms are in forms.py
+from pymongo import MongoClient
+from translations import TRANSLATIONS
 
 # Initialize Flask app
 app = Flask(__name__, static_folder='static', static_url_path='/static')
@@ -55,10 +57,69 @@ socketio = SocketIO(app)
 Talisman(app, content_security_policy=None)
 Session(app)
 
+# MongoDB Connection
+MONGO_HOST = 'localhost'
+MONGO_PORT = 27017
+MONGO_DB_NAME = 'interchange'
+
+try:
+    # Set a very short timeout for MongoDB to prevent blocking the app
+    mongo_client = MongoClient(MONGO_HOST, MONGO_PORT, serverSelectionTimeoutMS=1000)
+    mongo_db = mongo_client[MONGO_DB_NAME]
+    # Simple ping to check connection
+    mongo_client.admin.command('ping')
+    print(f"Successfully connected to MongoDB: {MONGO_HOST}:{MONGO_PORT}/{MONGO_DB_NAME}")
+    mongodb_available = True
+except Exception as e:
+    print(f"MongoDB not available, logging will be disabled: {e}")
+    mongodb_available = False
+
+# Helper function to log user activity to MongoDB
+def log_user_activity(user_id, activity_type, details=None):
+    if not mongodb_available:
+        return
+        
+    if not details:
+        details = {}
+    activity_log = {
+        "user_id": str(user_id),
+        "activity_type": activity_type,
+        "timestamp": datetime.utcnow(),
+        "details": details
+    }
+    try:
+        mongo_db.user_activity_logs.insert_one(activity_log)
+    except Exception as e:
+        # Don't print to console every time to avoid log spam if it goes down mid-session
+        pass
+
+
 # Routes
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/set_language/<lang>')
+def set_language(lang):
+    if lang in TRANSLATIONS:
+        session['lang'] = lang
+    return redirect(request.referrer or url_for('home'))
+
+@app.context_processor
+def inject_translations():
+    lang = session.get('lang', 'en')
+    def translate(key):
+        return TRANSLATIONS.get(lang, TRANSLATIONS['en']).get(key, key)
+    return dict(t=translate, current_lang=lang)
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/legal')
+def legal():
+    return render_template('legal.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -79,22 +140,26 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)  # Add remember functionality here
+            log_user_activity(user.id, "login", {"email": user.email})
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('dashboard'))
+            return redirect(next_page) if next_page else redirect(url_for('profile'))
         else:
             flash('Login unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 @app.route('/logout')
 def logout():
+    if current_user.is_authenticated:
+        log_user_activity(current_user.id, "logout", {"email": current_user.email})
     logout_user()
-    flash('You have been logged out.', 'success')
+    
     return redirect(url_for('home'))
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return redirect(url_for('profile'))
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -104,7 +169,12 @@ def profile():
         current_user.username = form.username.data
         current_user.native_language = form.native_language.data
         current_user.learning_language = form.learning_language.data
-        current_user.interests = form.interests.data
+        
+        # Combine selected interests and custom interests
+        selected_interests = form.interests_selection.data
+        custom_interests = [interest.strip() for interest in form.interests.data.split(',') if interest.strip()]
+        all_interests = list(set(selected_interests + custom_interests))
+        current_user.interests = ', '.join(all_interests)
         
         if form.profile_picture.data:
             filename = secure_filename(form.profile_picture.data.filename)
@@ -121,8 +191,16 @@ def profile():
         form.username.data = current_user.username
         form.native_language.data = current_user.native_language
         form.learning_language.data = current_user.learning_language
-        form.interests.data = current_user.interests
-    return render_template('profile.html', form=form)
+        
+        # Populate selected interests and custom interests
+        if current_user.interests:
+            user_interests = [interest.strip() for interest in current_user.interests.split(',') if interest.strip()]
+            form.interests_selection.data = [interest for interest in user_interests if interest in [choice[0] for choice in INTERESTS]]
+            form.interests.data = ', '.join([interest for interest in user_interests if interest not in [choice[0] for choice in INTERESTS]])
+        else:
+            form.interests_selection.data = []
+            form.interests.data = ''
+    return render_template('profile.html', form=form, language_map={lang[0]: lang[1] for lang in LANGUAGES})
 
 @app.route('/flashcards', methods=['GET', 'POST'])
 @login_required
@@ -137,10 +215,46 @@ def flashcards():
         db.session.add(new_flashcard)
         db.session.commit()
         flash('Flashcard created successfully!', 'success')
+        log_user_activity(current_user.id, "created_flashcard", {"term": new_flashcard.term, "definition": new_flashcard.definition})
         return redirect(url_for('flashcards'))
     
     user_flashcards = Flashcard.query.filter_by(user_id=current_user.id).all()
     return render_template('flashcard.html', form=form, flashcards=user_flashcards)
+
+@app.route('/flashcards/edit/<int:flashcard_id>', methods=['GET', 'POST'])
+@login_required
+def edit_flashcard(flashcard_id):
+    flashcard = Flashcard.query.get_or_404(flashcard_id)
+    if flashcard.user_id != current_user.id:
+        flash('You are not authorized to edit this flashcard.', 'danger')
+        return redirect(url_for('flashcards'))
+
+    form = FlashcardForm()
+    if form.validate_on_submit():
+        flashcard.term = form.front.data
+        flashcard.definition = form.back.data
+        db.session.commit()
+        flash('Flashcard updated successfully!', 'success')
+        log_user_activity(current_user.id, "edited_flashcard", {"flashcard_id": flashcard.id, "new_term": flashcard.term})
+        return redirect(url_for('flashcards'))
+    elif request.method == 'GET':
+        form.front.data = flashcard.term
+        form.back.data = flashcard.definition
+    return render_template('flashcard.html', form=form, flashcards=[flashcard], edit_mode=True)
+
+@app.route('/flashcards/delete/<int:flashcard_id>', methods=['POST'])
+@login_required
+def delete_flashcard(flashcard_id):
+    flashcard = Flashcard.query.get_or_404(flashcard_id)
+    if flashcard.user_id != current_user.id:
+        flash('You are not authorized to delete this flashcard.', 'danger')
+        return redirect(url_for('flashcards'))
+
+    db.session.delete(flashcard)
+    db.session.commit()
+    flash('Flashcard deleted successfully!', 'success')
+    log_user_activity(current_user.id, "deleted_flashcard", {"flashcard_id": flashcard.id, "term": flashcard.term})
+    return redirect(url_for('flashcards'))
 
 @app.route('/user/<int:user_id>')
 @login_required
@@ -148,42 +262,25 @@ def user_profile(user_id):
     user = User.query.get_or_404(user_id)  # Fetch user by ID
     return render_template('user_profile.html', user=user)  # Render user profile template
 
-@app.route('/learn_text_audio')
-def learn_text_audio():
-    # Caminho absoluto para o arquivo de transcrição
-    transcription_path = os.path.join(app.static_folder, 'doc', 'introducingYourFriends.txt')
+@app.route('/audio')
+@login_required
+def audio():
+    log_user_activity(current_user.id, "view_lessons_list")
+    lessons = TextAudioLesson.query.all()
+    return render_template('lessons_list.html', lessons=lessons)
 
-    # Debug: imprime o caminho absoluto para verificar
-    print(f"Procurando transcrição em: {os.path.abspath(transcription_path)}")
+@app.route('/audio/<int:lesson_id>')
+@login_required
+def audio_lesson(lesson_id):
+    lesson = TextAudioLesson.query.get_or_404(lesson_id)
+    log_user_activity(current_user.id, "view_lesson", {"lesson_id": lesson_id})
+    
+    # Use the content from the DB or the static file if content is pointing to a filename? 
+    # Actually, the model has text_content.
+    transcription = lesson.text_content
+    
+    return render_template('audio.html', transcription=transcription, lesson=lesson)
 
-    try:
-        # Lê o arquivo com codificação UTF-8 (ou outra se necessário)
-        with open(transcription_path, 'r', encoding='utf-8') as file:
-            transcription = file.read()
-        print("Transcrição carregada com sucesso!")
-    except FileNotFoundError as e:
-        transcription = f"""
-        <div style="color: #ff0000; padding: 10px; background-color: #fff0f0; border-radius: 5px;">
-            <strong>Erro:</strong> Arquivo de transcrição não encontrado em: {os.path.abspath(transcription_path)}
-            <br><br>
-            Verifique se:
-            <ul>
-                <li>O arquivo existe no caminho correto</li>
-                <li>O nome do arquivo está escrito corretamente (incluindo maiúsculas/minúsculas)</li>
-                <li>O arquivo tem permissões de leitura</li>
-            </ul>
-            <br>
-            Mensagem de erro: {str(e)}
-        </div>
-        """
-    except Exception as e:
-        transcription = f"""
-        <div style="color: #ff0000; padding: 10px; background-color: #fff0f0; border-radius: 5px;">
-            <strong>Erro inesperado ao ler a transcrição:</strong> {str(e)}
-        </div>
-        """
-
-    return render_template('learn_text_audio.html', transcription=transcription)
 
 
 @app.route('/game')
@@ -191,47 +288,92 @@ def game_start():
     return redirect(url_for('game_level', level_id=1))
 
 @app.route('/game/<int:level_id>')
+@login_required
 def game_level(level_id):
-    try:
-        with open('data/levels.json', 'r') as f:
-            levels_data = json.load(f)
-        
-        total_levels = len(levels_data['levels'])
-        level = next((lvl for lvl in levels_data['levels'] if lvl['id'] == level_id), None)
-        
-        if not level:
-            flash('Level not found.', 'danger')
-            return redirect(url_for('dashboard'))
+    # Security check: sequential level access
+    if level_id > current_user.last_completed_level + 1:
+        flash(f'Você precisa completar o nível {current_user.last_completed_level + 1} primeiro!', 'warning')
+        return redirect(url_for('game_level', level_id=current_user.last_completed_level + 1))
+    
+    log_user_activity(current_user.id, "started_game_level", {"level_id": level_id})
+    
+    # Fetch game items for this level from the database
+    game_items_db = InteractiveGame.query.filter_by(level_id=level_id).all()
+    
+    if not game_items_db:
+        flash('Level not found in database.', 'danger')
+        return redirect(url_for('profile'))
 
-        # Shuffle items for the game
-        game_items = level['items']
-        random.shuffle(game_items)
-        
-        # Extract words and shuffle them
-        words = [item['word'] for item in game_items]
-        random.shuffle(words)
-        
-        return render_template(
-            'interactive_game.html', 
-            level=level, 
-            game_items=game_items, 
-            words=words,
-            level_id=level_id,
-            total_levels=total_levels
-        )
+    # Total levels count from unique level_id in DB
+    total_levels = db.session.query(db.func.count(db.distinct(InteractiveGame.level_id))).scalar()
+    
+    # Map database objects to the format expected by the template
+    game_items = []
+    level_title = game_items_db[0].level_title
+    
+    for item in game_items_db:
+        game_items.append({
+            'image': item.image_file_path,
+            'word': item.word
+        })
 
-    except FileNotFoundError:
-        flash('Game data not found.', 'danger')
-        return redirect(url_for('dashboard'))
-    except (json.JSONDecodeError, KeyError):
-        flash('Invalid game data format.', 'danger')
-        return redirect(url_for('dashboard'))
+    # Shuffle items for the game
+    random.shuffle(game_items)
+    
+    # Extract words and shuffle them
+    words = [item['word'] for item in game_items]
+    random.shuffle(words)
+    
+    return render_template(
+        'interactive_game.html', 
+        level={'title': level_title}, 
+        game_items=game_items, 
+        words=words,
+        level_id=level_id,
+        total_levels=total_levels
+    )
+
+
+
+@app.route('/game/complete/<int:level_id>', methods=['POST'])
+@login_required
+def complete_level(level_id):
+    data = request.get_json()
+    score = data.get('score', 0) if data else 0
+    
+    # Increment total points
+    if current_user.total_points is None:
+        current_user.total_points = 0
+    current_user.total_points += score
+    
+    if level_id > current_user.last_completed_level:
+        current_user.last_completed_level = level_id
+        
+    db.session.commit()
+    log_user_activity(current_user.id, "completed_game_level", {"level_id": level_id, "score_added": score, "total_points": current_user.total_points})
+    
+    return jsonify({
+        "status": "success", 
+        "last_completed_level": current_user.last_completed_level,
+        "total_points": current_user.total_points
+    })
+
 
 
 @app.route('/play_interactive_game')
+
 @login_required
 def play_interactive_game():
     return redirect(url_for('game_start'))
+
+@app.route('/game/reset', methods=['POST'])
+@login_required
+def reset_game():
+    current_user.last_completed_level = 0
+    current_user.total_points = 0
+    db.session.commit()
+    log_user_activity(current_user.id, "reset_game_progress")
+    return jsonify({"status": "success", "message": "Progresso reiniciado com sucesso!"})
 
 @app.route('/admin')
 @login_required
@@ -348,19 +490,20 @@ def add_game():
     if form.validate_on_submit():
         # Save the image file
         image_filename = secure_filename(form.image.data.filename)
-        image_path = os.path.join(app.root_path, 'static/images', image_filename)
+        image_path = os.path.join(app.root_path, 'static/images/games', image_filename)
+        os.makedirs(os.path.dirname(image_path), exist_ok=True)
         form.image.data.save(image_path)
 
         new_game = InteractiveGame(
-            title=form.title.data,
-            image_file_path=os.path.join('images', image_filename),
-            correct_word=form.correct_word.data,
-            incorrect_words=form.incorrect_words.data,
+            level_id=form.level_id.data,
+            level_title=form.level_title.data,
+            image_file_path=os.path.join('games', image_filename),
+            word=form.word.data,
             target_language=form.target_language.data
         )
         db.session.add(new_game)
         db.session.commit()
-        flash('Game added successfully!', 'success')
+        flash('Game item added successfully!', 'success')
         return redirect(url_for('admin_games'))
     return render_template('admin/game_form.html', form=form, title='Add Game')
 
@@ -371,27 +514,36 @@ def edit_game(game_id):
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('home'))
     game = InteractiveGame.query.get_or_404(game_id)
-    form = GameForm(obj=game)
+    form = GameForm()
     if form.validate_on_submit():
-        game.title = form.title.data
-        game.correct_word = form.correct_word.data
-        game.incorrect_words = form.incorrect_words.data
+        game.level_id = form.level_id.data
+        game.level_title = form.level_title.data
+        game.word = form.word.data
         game.target_language = form.target_language.data
 
         if form.image.data:
             # Delete old image file
             if game.image_file_path:
-                os.remove(os.path.join(app.root_path, 'static', game.image_file_path))
+                try:
+                    os.remove(os.path.join(app.root_path, 'static/images', game.image_file_path))
+                except OSError:
+                    pass
             # Save new image file
             image_filename = secure_filename(form.image.data.filename)
-            image_path = os.path.join(app.root_path, 'static/images', image_filename)
+            image_path = os.path.join(app.root_path, 'static/images/games', image_filename)
             form.image.data.save(image_path)
-            game.image_file_path = os.path.join('images', image_filename)
+            game.image_file_path = os.path.join('games', image_filename)
 
         db.session.commit()
-        flash('Game updated successfully!', 'success')
+        flash('Game item updated successfully!', 'success')
         return redirect(url_for('admin_games'))
+    elif request.method == 'GET':
+        form.level_id.data = game.level_id
+        form.level_title.data = game.level_title
+        form.word.data = game.word
+        form.target_language.data = game.target_language
     return render_template('admin/game_form.html', form=form, title='Edit Game')
+
 
 @app.route('/admin/games/delete/<int:game_id>', methods=['POST'])
 @login_required
@@ -407,6 +559,13 @@ def delete_game(game_id):
     db.session.commit()
     flash('Game deleted successfully!', 'success')
     return redirect(url_for('admin_games'))
+
+@app.route('/debug-routes')
+def debug_routes():
+    output = []
+    for rule in app.url_map.iter_rules():
+        output.append(f"Endpoint: {rule.endpoint}, Methods: {rule.methods}, Rule: {rule.rule}")
+    return "<br>".join(output)
 
 @login_manager.user_loader
 def load_user(user_id):

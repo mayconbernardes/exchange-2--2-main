@@ -7,10 +7,10 @@
 
 <div class="container mt-5">
     <div class="game-header text-center mb-4">
-        <h1>{{ level.title }} (Level {{ level_id }})</h1>
-        <p class="lead">Arraste a palavra correta para cada imagem.</p>
+        <h1>{{ level.title }} ({{ t('game_level') }} {{ level_id }})</h1>
+        <p class="lead">{{ t('game_drag_instruction') }}</p>
         <div class="score-board">
-            <strong>Pontuação: <span id="score">0</span></strong>
+            <strong>{{ t('game_score') }}: <span id="score">0</span></strong>
         </div>
     </div>
 
@@ -21,13 +21,10 @@
             <div id="image-grid" class="row">
                 {% for item in game_items %}
                 <div class="col-md-4 mb-4">
-                    <div class="image-container" 
-                         data-word="{{ item.word }}" 
-                         ondragover="event.preventDefault()" 
-                         ondrop="drop(event)">
-                        <img src="{{ url_for('static', filename='images/' + item.image) }}" 
-                             class="img-fluid rounded" 
-                             alt="{{ item.word }}">
+                    <div class="image-container" data-word="{{ item.word }}" ondragover="event.preventDefault()"
+                        ondrop="drop(event)">
+                        <img src="{{ url_for('static', filename='images/' + item.image) }}" class="img-fluid rounded"
+                            alt="{{ item.word }}">
                         <div class="image-feedback"></div>
                     </div>
                 </div>
@@ -39,7 +36,7 @@
         <div class="col-md-4">
             <div id="word-bank" class="card">
                 <div class="card-header">
-                    Palavras
+                    {{ t('game_words') }}
                 </div>
                 <div class="card-body">
                     {% for word in words %}
@@ -52,7 +49,7 @@
         </div>
     </div>
     {% else %}
-    <p class="text-center">Nenhum item de jogo disponível para este nível.</p>
+    <p class="text-center">{{ t('game_no_items') }}</p>
     {% endif %}
 
     <!-- Modal de Fim de Jogo -->
@@ -60,16 +57,24 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content text-center">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="gameOverModalLabel">Nível Concluído!</h5>
+                    <h5 class="modal-title" id="gameOverModalLabel">{{ t('game_congrats') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <h4>Sua pontuação final é: <span id="final-score"></span></h4>
-                    <p id="feedback-message"></p>
+                <div class="modal-body py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-trophy fa-4x text-warning animate__animated animate__bounceIn"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">{{ t('game_congrats') }}</h2>
+                    <div class="score-display mb-4">
+                        <span class="display-1 fw-bold text-primary" id="final-score">0</span>
+                        <p class="text-muted">{{ t('game_points_earned') }}</p>
+                    </div>
+                    <h4 id="feedback-message" class="mb-4"></h4>
+                    <div id="modal-footer-buttons" class="d-grid gap-2 col-8 mx-auto">
+                        <!-- Buttons will be inserted here by JavaScript -->
+                    </div>
                 </div>
-                <div class="modal-footer" id="modal-footer-buttons">
-                    <!-- Buttons will be inserted here by JavaScript -->
-                </div>
+
             </div>
         </div>
     </div>
@@ -78,9 +83,24 @@
 <script>
     let score = 0;
     let correctMatches = 0;
-    const totalItems = {{ game_items|length }};
+    const totalItems = {{ game_items| length }};
     const currentLevel = {{ level_id }};
     const totalLevels = {{ total_levels }};
+
+    // Localization strings
+    const strCorrect = "{{ t('game_correct_feedback') }}";
+    const strIncorrect = "{{ t('game_incorrect_feedback') }}";
+    const strExcellent = "{{ t('game_excellent') }}";
+    const strGreat = "{{ t('game_great') }}";
+    const strGood = "{{ t('game_good') }}";
+    const strPerfect = "{{ t('game_perfect') }}";
+    const strAccumulated = "{{ t('game_accumulated') }}";
+    const strNextLevel = "{{ t('game_next_level') }}";
+    const strRestart = "{{ t('game_restart') }}";
+    const strConfirmReset = "{{ t('game_confirm_reset') }}";
+    const strAllFinished = "{{ t('game_all_finished') }}";
+    const strViewProfile = "{{ t('game_view_profile') }}";
+
 
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.innerText);
@@ -102,23 +122,26 @@
         if (data === correctWord) {
             score += 10;
             correctMatches++;
-            
+
             dropZone.classList.add('correct');
             wordCard.classList.add('correct');
-            feedbackElement.innerText = 'Correto!';
-            
+            feedbackElement.innerText = strCorrect;
+
             wordCard.draggable = false;
             wordCard.style.position = 'absolute';
-            wordCard.style.bottom = '10px';
+            wordCard.style.bottom = '5px';
             wordCard.style.left = '50%';
             wordCard.style.transform = 'translateX(-50%)';
+            wordCard.style.margin = '0';
+            wordCard.style.width = '90%';
             dropZone.appendChild(wordCard);
+
 
         } else {
             score -= 5;
             dropZone.classList.add('incorrect');
             wordCard.classList.add('incorrect');
-            feedbackElement.innerText = 'Errado!';
+            feedbackElement.innerText = strIncorrect;
 
             setTimeout(() => {
                 dropZone.classList.remove('incorrect');
@@ -128,32 +151,54 @@
         }
 
         document.getElementById('score').innerText = score;
-        
+
         if (correctMatches === totalItems) {
-            showGameOverModal();
+            // Notify server that level is complete
+            fetch(`/game/complete/${currentLevel}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ score: score })
+            }).then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    showGameOverModal(data.total_points);
+                });
         }
+
     }
-    
+
+
     document.querySelectorAll('.word-card').forEach(card => {
         card.addEventListener('dragend', (ev) => {
             ev.target.classList.remove('dragging');
         });
     });
 
-    function showGameOverModal() {
+    function showGameOverModal(totalPoints) {
         document.getElementById('final-score').innerText = score;
         const percentage = (correctMatches / totalItems) * 100;
         let message = '';
         if (percentage === 100) {
-            message = 'Excelente! Você acertou todas!';
+            message = strExcellent;
         } else if (percentage >= 70) {
-            message = 'Ótimo trabalho!';
+            message = strGreat;
         } else if (percentage >= 50) {
-            message = 'Bom esforço, continue tentando!';
+            message = strGood;
         } else {
-            message = 'Não desista, a prática leva à perfeição!';
+            message = strPerfect;
         }
-        document.getElementById('feedback-message').innerText = message;
+
+        if (totalPoints !== undefined) {
+            message += `<br><div class="mt-4 p-3 bg-light rounded shadow-sm border border-primary">
+                            <h5 class="text-secondary mb-1">${strAccumulated}</h5>
+                            <span class="display-4 fw-bold text-success">${totalPoints}</span>
+                         </div>`;
+        }
+
+        document.getElementById('feedback-message').innerHTML = message;
 
         const modalFooter = document.getElementById('modal-footer-buttons');
         modalFooter.innerHTML = ''; // Clear previous buttons
@@ -161,29 +206,43 @@
         if (currentLevel < totalLevels) {
             const nextLevelButton = document.createElement('a');
             nextLevelButton.href = `/game/${currentLevel + 1}`;
-            nextLevelButton.className = 'btn btn-primary';
-            nextLevelButton.innerText = 'Próximo Nível';
+            nextLevelButton.className = 'btn btn-primary btn-lg';
+            nextLevelButton.innerText = strNextLevel;
             modalFooter.appendChild(nextLevelButton);
         } else {
-            const playAgainButton = document.createElement('a');
-            playAgainButton.href = "{{ url_for('game_start') }}";
-            playAgainButton.className = 'btn btn-primary';
-            playAgainButton.innerText = 'Jogar Novamente';
-            modalFooter.appendChild(playAgainButton);
-            document.getElementById('gameOverModalLabel').innerText = 'Fim de Jogo!';
+            document.getElementById('gameOverModalLabel').innerText = strAllFinished;
+
+            const restartButton = document.createElement('button');
+            restartButton.className = 'btn btn-warning btn-lg';
+            restartButton.innerHTML = `<i class="fas fa-redo me-2"></i> ${strRestart}`;
+            restartButton.onclick = function () {
+                if (confirm(strConfirmReset)) {
+                    fetch('/game/reset', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token() }}"
+                        }
+                    }).then(() => {
+                        window.location.href = '/game/1';
+                    });
+                }
+            };
+            modalFooter.appendChild(restartButton);
         }
 
-        const dashboardButton = document.createElement('a');
-        dashboardButton.href = "{{ url_for('dashboard') }}";
-        dashboardButton.className = 'btn btn-secondary';
-        dashboardButton.innerText = 'Voltar ao Dashboard';
-        modalFooter.appendChild(dashboardButton);
-        
+        const profileButton = document.createElement('a');
+        profileButton.href = "{{ url_for('profile') }}";
+        profileButton.className = 'btn btn-secondary';
+        profileButton.innerText = strViewProfile;
+        modalFooter.appendChild(profileButton);
+
         var myModal = new bootstrap.Modal(document.getElementById('gameOverModal'), {
             keyboard: false,
-            backdrop: false
+            backdrop: 'static'
         });
         myModal.show();
     }
+</script>
+
 </script>
 {% endblock %}

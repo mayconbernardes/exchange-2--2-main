@@ -4,59 +4,96 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Your Flashcards</h1>
+    <h1 class="text-center mb-5 fw-bold text-primary">
+        <i class="bi bi-lightning-charge"></i> Flashcards
+    </h1>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-lg mb-4">
-                <div class="card-header bg-primary text-white">
-                    Create New Flashcard
+    <div class="row g-4">
+        <!-- Coluna: Criar Novo Flashcard -->
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header text-white fw-semibold rounded-top-4"
+                     style="background: linear-gradient(45deg, #0a58ca, #0d6efd);">
+                    <i class="bi bi-plus-circle me-1"></i> Criar Novo Flashcard
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="POST">
                         {{ form.hidden_tag() }}
                         <div class="mb-3">
-                            {{ form.front.label(class="form-label") }}
-                            {{ form.front(class="form-control") }}
+                            {{ form.front.label(class="form-label fw-semibold") }}
+                            {{ form.front(class="form-control form-control-lg border-primary-subtle shadow-sm") }}
                             {% for error in form.front.errors %}
-                                <span class="text-danger">{{ error }}</span><br>
+                                <div class="text-danger small mt-1">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="mb-3">
-                            {{ form.back.label(class="form-label") }}
-                            {{ form.back(class="form-control") }}
+                            {{ form.back.label(class="form-label fw-semibold") }}
+                            {{ form.back(class="form-control form-control-lg border-primary-subtle shadow-sm") }}
                             {% for error in form.back.errors %}
-                                <span class="text-danger">{{ error }}</span><br>
+                                <div class="text-danger small mt-1">{{ error }}</div>
                             {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Flashcard</button>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-check-circle"></i> Adicionar Flashcard
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-info text-white">
-                    Your Existing Flashcards
+
+        <!-- Coluna: Flashcards Existentes -->
+        <div class="col-md-7">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-info text-white fw-semibold rounded-top-4">
+                    <i class="bi bi-collection"></i> Seus Flashcards
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     {% if flashcards %}
                         <div class="list-group">
                             {% for flashcard in flashcards %}
-                                <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h5 class="mb-1">{{ flashcard.word }}</h5>
+                                <div class="list-group-item rounded-4 mb-3 shadow-sm border-0 p-4 hover-shadow" style="transition: all 0.2s;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="text-primary fw-bold mb-0">{{ flashcard.term }}</h5>
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ url_for('edit_flashcard', flashcard_id=flashcard.id) }}" 
+                                               class="btn btn-sm btn-outline-primary px-3 fw-semibold shadow-sm" 
+                                               title="Editar">
+                                                <i class="bi bi-pencil me-1"></i> Editar
+                                            </a>
+                                            <form action="{{ url_for('delete_flashcard', flashcard_id=flashcard.id) }}" 
+                                                  method="POST" class="d-inline">
+                                                {{ form.csrf_token }}
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-outline-danger px-3 fw-semibold shadow-sm" 
+                                                        title="Excluir"
+                                                        onclick="return confirm('Tem certeza que deseja excluir este flashcard?');">
+                                                    <i class="bi bi-trash me-1"></i> Excluir
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                    <p class="mb-1">{{ flashcard.translation }}</p>
+                                    <p class="text-muted mb-0">{{ flashcard.definition }}</p>
                                 </div>
                             {% endfor %}
                         </div>
                     {% else %}
-                        <p>You haven't created any flashcards yet. Start by adding one!</p>
+                        <div class="text-center text-muted py-5">
+                            <i class="bi bi-lightbulb fs-3"></i>
+                            <p class="mt-3">Você ainda não criou nenhum flashcard.<br>
+                            Comece adicionando um agora!</p>
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Estilo adicional -->
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.1);
+    }
+</style>
 {% endblock %}

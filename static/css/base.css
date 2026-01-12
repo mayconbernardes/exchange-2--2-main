@@ -3,7 +3,6 @@ html, body {
     height: 100%; /* Ensure the body and html take the full height of the viewport */
     margin: 0; /* Remove default margin */
     padding: 0;
-    height: 100%;
 }
 
 body {
@@ -16,6 +15,11 @@ body {
     flex-direction: column; /* Stack content and footer vertically */
     min-height: 100vh; /* Take at least the full viewport height */
 }
+
+.main-content-wrapper {
+    flex: 1;
+}
+
 /* Video Background */
 .video-background {
     position: fixed;
@@ -41,12 +45,6 @@ body {
 .content {
     position: relative;
     z-index: 1; /* Brings content above the video */
-}
-
-/* Dark Mode Style */
-.dark-mode {
-    background-color: #1E293B; /* Dark background */
-    color: #F1F5F9; /* Light text */
 }
 
 /* Navbar Styles */
@@ -84,27 +82,12 @@ button:hover, .btn-outline-secondary:hover {
     color: #FFFFFF;
 }
 
-/* Dark Mode Button */
-body.dark-mode a {
-    color: #A5B4D4; /* Lighter blue links in dark mode */
-}
-
-body.dark-mode button, body.dark-mode .btn-outline-secondary {
-    background-color: #2D3748; /* Darker buttons in dark mode */
-    color: #E2E8F0; /* Light text on dark buttons */
-    border-color: #4A5568;
-}
-
-body.dark-mode button:hover, body.dark-mode .btn-outline-secondary:hover {
-    background-color: #4A5568;
-    color: #F1F5F9;
-}
-
 /* Card Styles */
 .card {
     background-color: #F1F5F9; /* Light background for cards */
     border: 1px solid #E2E8F0;
     transition: background-color 0.3s ease, border-color 0.3s ease;
+    min-height: 250px;
 }
 
 .card-body {
@@ -113,20 +96,6 @@ body.dark-mode button:hover, body.dark-mode .btn-outline-secondary:hover {
 
 .card:hover {
     background-color: #E2E8F0; /* Lighter card background on hover */
-}
-
-/* Dark Mode Card Styles */
-body.dark-mode .card {
-    background-color: #2D3748; /* Dark background for cards in dark mode */
-    border-color: #4A5568;
-}
-
-body.dark-mode .card-body {
-    color: #F1F5F9; /* Light text inside cards in dark mode */
-}
-
-body.dark-mode .card:hover {
-    background-color: #4A5568; /* Darker card background on hover */
 }
 
 /* Tag list */
@@ -152,11 +121,6 @@ body.dark-mode .card:hover {
                 0 0.2rem 1.5rem rgb(0 0 0 / 40%);
 }
 
-/* Dark Mode Tag Styles */
-body.dark-mode .tag {
-    background-color: #4A5568; /* Darker background for tags in dark mode */
-}
-
 /* Theme Toggle Button */
 #theme-toggle {
     background-color: #4B5563;
@@ -172,17 +136,6 @@ body.dark-mode .tag {
 }
 
 
-body.dark-mode .goog-te-gadget-simple a {
-    color: #000000; /* Lighter color for links in dark mode */
-}
-
-/* Fade Effect */
-.fade {
-    pointer-events: none;
-    background: linear-gradient(90deg, #1E293B, transparent 30%, transparent 70%, #1E293B);
-    position: absolute;
-    inset: 0;
-}
 
 /* Transition for smooth color change */
 @keyframes loop {

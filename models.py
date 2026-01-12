@@ -14,6 +14,8 @@ class User(UserMixin, db.Model):
     profile_picture = db.Column(db.String(200), nullable=True)
     interests = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_completed_level = db.Column(db.Integer, default=0)
+    total_points = db.Column(db.Integer, default=0)
 
     def get_id(self):
         return str(self.id)  # Required for Flask-Login to load user
@@ -35,8 +37,8 @@ class TextAudioLesson(db.Model):
 
 class InteractiveGame(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+    level_id = db.Column(db.Integer, nullable=True)
+    level_title = db.Column(db.String(100), nullable=True)
     image_file_path = db.Column(db.String(255), nullable=False)
-    correct_word = db.Column(db.String(100), nullable=False)
-    incorrect_words = db.Column(db.String(500), nullable=False) # Comma-separated words
-    target_language = db.Column(db.String(50), nullable=False)
+    word = db.Column(db.String(100), nullable=True)
+    target_language = db.Column(db.String(50), nullable=True)
