@@ -27,7 +27,7 @@
                     <form action="{{ url_for('delete_game', game_id=game.id) }}" method="POST" style="display:inline;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <button type="submit" class="btn btn-sm btn-danger"
-                            onclick="return confirm({{ t('admin_confirm_delete')|tojson }})">{{ t('admin_btn_delete')
+                            onclick='return confirm({{ t("admin_confirm_delete")|tojson }})'>{{ t('admin_btn_delete')
                             }}</button>
                     </form>
                 </td>

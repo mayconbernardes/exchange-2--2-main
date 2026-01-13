@@ -477,17 +477,26 @@ def edit_lesson(lesson_id):
 @login_required
 def delete_lesson(lesson_id):
     if current_user.id != 1:
-        flash('You are not authorized to access this page.', 'danger')
+        flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     lesson = TextAudioLesson.query.get_or_404(lesson_id)
     # Delete audio file
     if lesson.audio_file_path:
-        os.remove(os.path.join(app.root_path, 'static', lesson.audio_file_path))
+        audio_path = os.path.join(app.root_path, 'static', lesson.audio_file_path)
+        if os.path.exists(audio_path):
+            try:
+                os.remove(audio_path)
+            except OSError:
+                pass
     # Delete text file
-    text_filename = f"{os.path.splitext(os.path.basename(lesson.audio_file_path))[0]}.txt"
-    text_path = os.path.join(app.root_path, 'static/doc', text_filename)
-    if os.path.exists(text_path):
-        os.remove(text_path)
+    if lesson.audio_file_path:
+        text_filename = f"{os.path.splitext(os.path.basename(lesson.audio_file_path))[0]}.txt"
+        text_path = os.path.join(app.root_path, 'static/doc', text_filename)
+        if os.path.exists(text_path):
+            try:
+                os.remove(text_path)
+            except OSError:
+                pass
     db.session.delete(lesson)
     db.session.commit()
     flash(get_t('admin_flash_lesson_deleted'), 'success')
@@ -573,7 +582,10 @@ def delete_game(game_id):
     if game.image_file_path:
         image_path = os.path.join(app.root_path, 'static/images', game.image_file_path)
         if os.path.exists(image_path):
-            os.remove(image_path)
+            try:
+                os.remove(image_path)
+            except OSError:
+                pass
     db.session.delete(game)
     db.session.commit()
     flash(get_t('admin_flash_game_deleted'), 'success')
