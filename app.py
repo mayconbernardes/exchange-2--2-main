@@ -29,6 +29,13 @@ from models import User, Flashcard, TextAudioLesson, InteractiveGame, db  # Ensu
 from forms import UserProfileForm, FlashcardForm, LoginForm, RegistrationForm, LessonForm, GameForm, INTERESTS, LANGUAGES # Ensure these forms are in forms.py
 from pymongo import MongoClient
 from translations import TRANSLATIONS
+import cloudinary
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+
+# Cloudinary configuration
+# CLOUDINARY_URL environment variable is automatically detected if set
+cloudinary.config(secure=True)
 
 # Initialize Flask app
 app = Flask(__name__, static_folder='static', static_url_path='/static')
@@ -187,12 +194,17 @@ def profile():
         current_user.interests = ', '.join(all_interests)
         
         if form.profile_picture.data:
-            filename = secure_filename(form.profile_picture.data.filename)
-            images_dir = os.path.join(app.root_path, 'static', 'images')
-            os.makedirs(images_dir, exist_ok=True)
-            picture_path = os.path.join(images_dir, filename)
-            form.profile_picture.data.save(picture_path)
-            current_user.profile_picture = filename
+            file = form.profile_picture.data
+            if os.environ.get('CLOUDINARY_URL'):
+                upload_result = cloudinary.uploader.upload(file, folder="profiles/")
+                current_user.profile_picture = upload_result['secure_url']
+            else:
+                filename = secure_filename(file.filename)
+                images_dir = os.path.join(app.root_path, 'static', 'images')
+                os.makedirs(images_dir, exist_ok=True)
+                picture_path = os.path.join(images_dir, filename)
+                file.save(picture_path)
+                current_user.profile_picture = filename
         
         db.session.commit()
         flash(get_t('profile_update_success'), 'success')
@@ -211,25 +223,6 @@ def profile():
             form.interests_selection.data = []
             form.interests.data = ''
     return render_template('profile.html', form=form, language_map={lang[0]: lang[1] for lang in LANGUAGES})
-
-@app.route('/change_password', methods=['GET', 'POST'])
-@login_required
-def change_password():
-    form = ChangePasswordForm()
-    # Update validator messages dynamically
-    form.new_password.validators[1].message = get_t('valid_password_min_length')
-    form.new_password.validators[2].message = get_t('valid_password_complexity')
-
-    if form.validate_on_submit():
-        if bcrypt.check_password_hash(current_user.password, form.old_password.data):
-            hashed_password = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
-            current_user.password = hashed_password
-            db.session.commit()
-            flash(get_t('profile_password_success'), 'success')
-            return redirect(url_for('profile'))
-        else:
-            flash(get_t('profile_password_error'), 'danger')
-    return render_template('change_password.html', form=form)
 
 @app.route('/flashcards', methods=['GET', 'POST'])
 @login_required
@@ -407,7 +400,7 @@ def reset_game():
 @app.route('/admin')
 @login_required
 def admin():
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('home'))
     return render_template('admin/index.html')
@@ -415,7 +408,7 @@ def admin():
 @app.route('/admin/lessons')
 @login_required
 def admin_lessons():
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('home'))
     lessons = TextAudioLesson.query.all()
@@ -424,7 +417,7 @@ def admin_lessons():
 @app.route('/admin/games')
 @login_required
 def admin_games():
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('home'))
     games = InteractiveGame.query.all()
@@ -433,7 +426,7 @@ def admin_games():
 @app.route('/admin/lessons/add', methods=['GET', 'POST'])
 @login_required
 def add_lesson():
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     form = LessonForm()
@@ -443,13 +436,19 @@ def add_lesson():
             return render_template('admin/lesson_form.html', form=form, title=get_t('admin_title_add_lesson'))
 
         # Save the audio file
-        audio_filename = secure_filename(form.audio.data.filename)
-        audio_path = os.path.join(app.root_path, 'static/audio', audio_filename)
-        os.makedirs(os.path.dirname(audio_path), exist_ok=True)
-        form.audio.data.save(audio_path)
+        file = form.audio.data
+        if os.environ.get('CLOUDINARY_URL'):
+            upload_result = cloudinary.uploader.upload(file, resource_type="video", folder="lessons/audio/")
+            audio_file_path = upload_result['secure_url']
+        else:
+            audio_filename = secure_filename(file.filename)
+            audio_path = os.path.join(app.root_path, 'static/audio', audio_filename)
+            os.makedirs(os.path.dirname(audio_path), exist_ok=True)
+            file.save(audio_path)
+            audio_file_path = os.path.join('audio', audio_filename)
 
         # Save the text file
-        text_filename = f"{os.path.splitext(audio_filename)[0]}.txt"
+        text_filename = f"{os.path.splitext(os.path.basename(audio_file_path))[0]}.txt" if not os.environ.get('CLOUDINARY_URL') else f"{os.path.splitext(os.path.basename(upload_result['public_id']))[0]}.txt"
         text_path = os.path.join(app.root_path, 'static/doc', text_filename)
         os.makedirs(os.path.dirname(text_path), exist_ok=True)
         with open(text_path, 'w') as f:
@@ -458,7 +457,7 @@ def add_lesson():
         new_lesson = TextAudioLesson(
             title=form.title.data,
             text_content=form.text.data,
-            audio_file_path=os.path.join('audio', audio_filename),
+            audio_file_path=audio_file_path,
             target_language=form.target_language.data
         )
         db.session.add(new_lesson)
@@ -470,7 +469,7 @@ def add_lesson():
 @app.route('/admin/lessons/edit/<int:lesson_id>', methods=['GET', 'POST'])
 @login_required
 def edit_lesson(lesson_id):
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     lesson = TextAudioLesson.query.get_or_404(lesson_id)
@@ -481,16 +480,43 @@ def edit_lesson(lesson_id):
         lesson.target_language = form.target_language.data
 
         if form.audio.data:
-            # Delete old audio file
-            if lesson.audio_file_path:
-                old_path = os.path.join(app.root_path, 'static', lesson.audio_file_path)
-                if os.path.exists(old_path):
-                    os.remove(old_path)
-            # Save new audio file
-            audio_filename = secure_filename(form.audio.data.filename)
-            audio_path = os.path.join(app.root_path, 'static/audio', audio_filename)
-            form.audio.data.save(audio_path)
-            lesson.audio_file_path = os.path.join('audio', audio_filename)
+            file = form.audio.data
+            if os.environ.get('CLOUDINARY_URL'):
+                # Delete old audio file from Cloudinary if it was stored there
+                if lesson.audio_file_path and "res.cloudinary.com" in lesson.audio_file_path:
+                    public_id = os.path.splitext(os.path.basename(lesson.audio_file_path))[0]
+                    cloudinary.uploader.destroy(f"lessons/audio/{public_id}", resource_type="video")
+                upload_result = cloudinary.uploader.upload(file, resource_type="video", folder="lessons/audio/")
+                lesson.audio_file_path = upload_result['secure_url']
+            else:
+                # Delete old audio file from local storage
+                if lesson.audio_file_path and not "res.cloudinary.com" in lesson.audio_file_path:
+                    old_path = os.path.join(app.root_path, 'static', lesson.audio_file_path)
+                    if os.path.exists(old_path):
+                        os.remove(old_path)
+                # Save new audio file locally
+                filename = secure_filename(file.filename)
+                audio_dir = os.path.join(app.root_path, 'static/audio')
+                os.makedirs(audio_dir, exist_ok=True)
+                file_path = os.path.join(audio_dir, filename)
+                file.save(file_path)
+                lesson.audio_file_path = f'audio/{filename}'
+        
+        # Update text file if audio was updated or text content changed
+        if form.audio.data or form.text.data != lesson.text_content:
+            # Determine text filename based on whether Cloudinary is used or not
+            if os.environ.get('CLOUDINARY_URL') and lesson.audio_file_path and "res.cloudinary.com" in lesson.audio_file_path:
+                public_id = os.path.splitext(os.path.basename(lesson.audio_file_path))[0]
+                text_filename = f"{public_id}.txt"
+            elif lesson.audio_file_path and not "res.cloudinary.com" in lesson.audio_file_path:
+                text_filename = f"{os.path.splitext(os.path.basename(lesson.audio_file_path))[0]}.txt"
+            else: # Fallback if no audio or path is not set
+                text_filename = f"lesson_{lesson.id}.txt" # Or some other unique identifier
+
+            text_path = os.path.join(app.root_path, 'static/doc', text_filename)
+            os.makedirs(os.path.dirname(text_path), exist_ok=True)
+            with open(text_path, 'w') as f:
+                f.write(form.text.data)
 
         db.session.commit()
         flash(get_t('admin_flash_lesson_updated'), 'success')
@@ -500,20 +526,24 @@ def edit_lesson(lesson_id):
 @app.route('/admin/lessons/delete/<int:lesson_id>', methods=['POST'])
 @login_required
 def delete_lesson(lesson_id):
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     lesson = TextAudioLesson.query.get_or_404(lesson_id)
     # Delete audio file
     if lesson.audio_file_path:
-        audio_path = os.path.join(app.root_path, 'static', lesson.audio_file_path)
-        if os.path.exists(audio_path):
-            try:
-                os.remove(audio_path)
-            except OSError:
-                pass
+        if "res.cloudinary.com" in lesson.audio_file_path:
+            public_id = os.path.splitext(os.path.basename(lesson.audio_file_path))[0]
+            cloudinary.uploader.destroy(f"lessons/audio/{public_id}", resource_type="video")
+        else:
+            audio_path = os.path.join(app.root_path, 'static', lesson.audio_file_path)
+            if os.path.exists(audio_path):
+                try:
+                    os.remove(audio_path)
+                except OSError:
+                    pass
     # Delete text file
-    if lesson.audio_file_path:
+    if lesson.audio_file_path and not "res.cloudinary.com" in lesson.audio_file_path:
         text_filename = f"{os.path.splitext(os.path.basename(lesson.audio_file_path))[0]}.txt"
         text_path = os.path.join(app.root_path, 'static/doc', text_filename)
         if os.path.exists(text_path):
@@ -529,7 +559,7 @@ def delete_lesson(lesson_id):
 @app.route('/admin/games/add', methods=['GET', 'POST'])
 @login_required
 def add_game():
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     form = GameForm()
@@ -537,17 +567,24 @@ def add_game():
         if not form.image.data:
             flash(get_t('admin_flash_image_required'), 'danger')
             return render_template('admin/game_form.html', form=form, title=get_t('admin_title_add_game'))
-
+ 
         # Save the image file
-        image_filename = secure_filename(form.image.data.filename)
-        image_path = os.path.join(app.root_path, 'static/images/games', image_filename)
-        os.makedirs(os.path.dirname(image_path), exist_ok=True)
-        form.image.data.save(image_path)
-
+        file = form.image.data
+        if os.environ.get('CLOUDINARY_URL'):
+            upload_result = cloudinary.uploader.upload(file, folder="games/")
+            image_file_path = upload_result['secure_url']
+        else:
+            image_filename = secure_filename(file.filename)
+            game_images_dir = os.path.join(app.root_path, 'static/images/games')
+            os.makedirs(game_images_dir, exist_ok=True)
+            image_path = os.path.join(game_images_dir, image_filename)
+            file.save(image_path)
+            image_file_path = os.path.join('games', image_filename)
+ 
         new_game = InteractiveGame(
             level_id=form.level_id.data,
             level_title=form.level_title.data,
-            image_file_path=os.path.join('games', image_filename),
+            image_file_path=image_file_path,
             word=form.word.data,
             target_language=form.target_language.data
         )
@@ -560,7 +597,7 @@ def add_game():
 @app.route('/admin/games/edit/<int:game_id>', methods=['GET', 'POST'])
 @login_required
 def edit_game(game_id):
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     game = InteractiveGame.query.get_or_404(game_id)
@@ -572,17 +609,26 @@ def edit_game(game_id):
         game.target_language = form.target_language.data
 
         if form.image.data:
-            # Delete old image file
-            if game.image_file_path:
-                try:
-                    os.remove(os.path.join(app.root_path, 'static/images', game.image_file_path))
-                except OSError:
-                    pass
-            # Save new image file
-            image_filename = secure_filename(form.image.data.filename)
-            image_path = os.path.join(app.root_path, 'static/images/games', image_filename)
-            form.image.data.save(image_path)
-            game.image_file_path = os.path.join('games', image_filename)
+            file = form.image.data
+            if os.environ.get('CLOUDINARY_URL'):
+                # Delete old image from Cloudinary if it was stored there
+                if game.image_file_path and "res.cloudinary.com" in game.image_file_path:
+                    public_id = os.path.splitext(os.path.basename(game.image_file_path))[0]
+                    cloudinary.uploader.destroy(f"games/{public_id}")
+                upload_result = cloudinary.uploader.upload(file, folder="games/")
+                game.image_file_path = upload_result['secure_url']
+            else:
+                # Delete old local image
+                if game.image_file_path and not "res.cloudinary.com" in game.image_file_path:
+                    try:
+                        os.remove(os.path.join(app.root_path, 'static/images', game.image_file_path))
+                    except OSError:
+                        pass
+                # Save new image locally
+                image_filename = secure_filename(file.filename)
+                image_path = os.path.join(app.root_path, 'static/images/games', image_filename)
+                file.save(image_path)
+                game.image_file_path = os.path.join('games', image_filename)
 
         db.session.commit()
         flash(get_t('admin_flash_game_updated'), 'success')
@@ -598,18 +644,22 @@ def edit_game(game_id):
 @app.route('/admin/games/delete/<int:game_id>', methods=['POST'])
 @login_required
 def delete_game(game_id):
-    if not current_user.is_admin:
+    if current_user.id != 1:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     game = InteractiveGame.query.get_or_404(game_id)
     # Delete image file
     if game.image_file_path:
-        image_path = os.path.join(app.root_path, 'static/images', game.image_file_path)
-        if os.path.exists(image_path):
-            try:
-                os.remove(image_path)
-            except OSError:
-                pass
+        if "res.cloudinary.com" in game.image_file_path:
+            public_id = os.path.splitext(os.path.basename(game.image_file_path))[0]
+            cloudinary.uploader.destroy(f"games/{public_id}")
+        else:
+            image_path = os.path.join(app.root_path, 'static/images', game.image_file_path)
+            if os.path.exists(image_path):
+                try:
+                    os.remove(image_path)
+                except OSError:
+                    pass
     db.session.delete(game)
     db.session.commit()
     flash(get_t('admin_flash_game_deleted'), 'success')

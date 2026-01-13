@@ -65,9 +65,14 @@
             </div>
         </div>
         <div class="col-md-4 text-center">
+            {% if current_user.profile_picture and current_user.profile_picture.startswith('http') %}
+            <img src="{{ current_user.profile_picture }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture"
+                style="width: 150px; height: 150px; object-fit: cover;">
+            {% else %}
             <img src="{{ url_for('static', filename='images/' + (current_user.profile_picture if current_user.profile_picture else 'default.jpg')) }}"
                 class="img-fluid rounded-circle mb-3" alt="Profile Picture"
                 style="width: 150px; height: 150px; object-fit: cover;">
+            {% endif %}
             <h3>{{ current_user.username }}</h3>
             <p><strong>Email:</strong> {{ current_user.email }}</p>
             <p><strong>{{ t('profile_native') }}:</strong> {{ language_map.get(current_user.native_language,
@@ -83,9 +88,6 @@
             <hr>
 
             <div class="d-grid gap-2">
-                <a href="{{ url_for('change_password') }}" class="btn btn-warning">
-                    <i class="fas fa-key me-2"></i> {{ t('profile_change_password') }}
-                </a>
                 <a href="{{ url_for('flashcards') }}" class="btn btn-success">
                     <i class="fas fa-layer-group me-2"></i> {{ t('profile_manage_flashcards') }}
                 </a>

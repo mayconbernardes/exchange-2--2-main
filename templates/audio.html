@@ -15,7 +15,11 @@
             <div style="width: 40px;"></div>
         </div>
         <audio controls class="audio-player">
+            {% if lesson.audio_file_path.startswith('http') %}
+            <source src="{{ lesson.audio_file_path }}" type="audio/mpeg">
+            {% else %}
             <source src="{{ url_for('static', filename=lesson.audio_file_path) }}" type="audio/mpeg">
+            {% endif %}
             {{ t('audio_browser_error') }}
         </audio>
     </div>
