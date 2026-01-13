@@ -149,6 +149,35 @@ TRANSLATIONS = {
         'profile_update_success': 'Your profile has been updated!',
         'nav_login': 'Login',
         'nav_register': 'Register',
+
+        # Privacy Policy
+        'privacy_title': 'Privacy Policy',
+        'privacy_intro': 'Your privacy is important to us. It is Language Exchange\'s policy to respect your privacy regarding any information we may collect from you across our website.',
+        'privacy_s1_title': '1. Information we collect',
+        'privacy_s1_text': 'We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used.',
+        'privacy_s2_title': '2. Use of Information',
+        'privacy_s2_text': 'We only retain collected information for as long as necessary to provide you with your requested service. Your data is securely stored using Neon.tech (PostgreSQL database) and Cloudinary (for media files). We protect it within commercially acceptable means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification.',
+        'privacy_s3_title': '3. Cookies',
+        'privacy_s3_text': 'We use cookies to help improve your experience of our website. These are used for session management and to remember your preferences (like your language choice).',
+        'privacy_s4_title': '4. Third-party Access',
+        'privacy_s4_text': 'Our website is hosted on Render.com. Your data may be processed by our infrastructure partners (Render, Neon, Cloudinary) solely to provide the application service. We do not share your personal information with other third parties except when required by law.',
+        'privacy_s5_title': '5. Consent',
+        'privacy_s5_text': 'Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.',
+
+        # Legal Mentions
+        'legal_title': 'Legal Mentions',
+        'legal_s1_title': '1. Website Presentation',
+        'legal_s1_owner': 'Owner: Maycon',
+        'legal_s1_contact': 'Contact: contact@languageexchange.com',
+        'legal_s1_host': 'Hosting: Render.com (Render Services, Inc.)',
+        'legal_s2_title': '2. Terms of Service',
+        'legal_s2_text': 'By accessing this website, you are agreeing to be bound by these website Terms and Conditions of Use, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.',
+        'legal_s3_title': '3. Intellectual Property',
+        'legal_s3_text': 'The materials contained in this website are protected by applicable copyright and trademark law. All content, including text, graphics, logos, and images, is the property of Language Exchange or its content suppliers.',
+        'legal_s4_title': '4. Disclaimer',
+        'legal_s4_text': 'The materials on Language Exchange\'s website are provided on an \'as is\' basis. Language Exchange makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.',
+        'legal_s5_title': '5. Limitations',
+        'legal_s5_text': 'In no event shall Language Exchange or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Language Exchange\'s website.',
     },
 
     'fr': {
@@ -301,6 +330,35 @@ TRANSLATIONS = {
         'profile_update_success': 'Votre profil a été mis à jour !',
         'nav_login': 'Connexion',
         'nav_register': 'S\'inscrire',
+
+        # Privacy Policy (FR)
+        'privacy_title': 'Politique de confidentialité',
+        'privacy_intro': 'Votre vie privée est importante pour nous. La politique de Language Exchange est de respecter votre vie privée concernant toute information que nous pouvons collecter de votre part sur notre site web.',
+        'privacy_s1_title': '1. Informations que nous collectons',
+        'privacy_s1_text': 'Nous ne demandons des informations personnelles que quando nous en avons réellement besoin pour vous fournir um service. Nous as collectons por des meios leais e honnêtes, avec votre conhecimento e seu consentimento. Nous vous informons également de la raison pour laquelle nous les collectons et de la manière dont elles seront utilisées.',
+        'privacy_s2_title': '2. Utilisation des informations',
+        'privacy_s2_text': 'Nous ne conservons les informations collectées que le temps nécessaire pour vous fournir le service demandé. Vos données sont stockées en toute sécurité via Neon.tech (base de données PostgreSQL) et Cloudinary (pour les fichiers multimédias). Nous les protégerons par des moyens commercialement acceptables pour éviter la perte et le vol, ainsi que l\'accès, la divulgation, la copie, l\'utilisation ou la modification non autorisés.',
+        'privacy_s3_title': '3. Cookies',
+        'privacy_s3_text': 'Nous utilisons des cookies pour aider à améliorer votre expérience sur notre site web. Ceux-ci sont utilisés pour la gestion des sessions et pour se souvenir de vos préférences (comme votre choix de langue).',
+        'privacy_s4_title': '4. Accès par des tiers',
+        'privacy_s4_text': 'Notre site web est hébergé sur Render.com. Vos données peuvent être traitées par nos partenaires d\'infrastructure (Render, Neon, Cloudinary) uniquement pour fournir le service applicatif. Nous ne partageons vos informations personnelles com d\'autres tiers, sauf si la loi l\'exige.',
+        'privacy_s5_title': '5. Consentement',
+        'privacy_s5_text': 'Votre utilisation continue de notre site web sera considérée comme une acceptation de nos pratiques en matière de confidentialité e d\'informations personnelles. Si vous avez des questions sur la manière dont nous traitons les données des utilisateurs et les informations personnelles, n\'hésitez pas à nous contacter.',
+
+        # Legal Mentions (FR)
+        'legal_title': 'Mentions légales',
+        'legal_s1_title': '1. Présentation du site web',
+        'legal_s1_owner': 'Propriétaire : Maycon',
+        'legal_s1_contact': 'Contact : contact@languageexchange.com',
+        'legal_s1_host': 'Hébergement : Render.com (Render Services, Inc.)',
+        'legal_s2_title': '2. Conditions d\'utilisation',
+        'legal_s2_text': 'En accédant à ce site web, vous acceptez d\'être lié par les présentes conditions d\'utilisation do site web, par toutes les lois et réglementações applicables, e vous acceptez d\'être responsável do respect de toutes les lois locales applicables. Si vous n\'êtes pas d\'accord avec l\'une de ces conditions, il vous est interdit d\'utiliser ou d\'accéder à ce site.',
+        'legal_s3_title': '3. Propriété intellectuelle',
+        'legal_s3_text': 'Les matériels contenus dans ce site web sont protégés par le droit d\'auteur et le droit des marques applicables. Tout le contenu, y compris les textes, graphiques, logos et images, est la propriété de Language Exchange ou de ses fournisseurs de contenu.',
+        'legal_s4_title': '4. Clause de non-responsabilité',
+        'legal_s4_text': 'Les matériels sur le site web de Language Exchange sont fournis « tels quels ». Language Exchange ne donne aucune garantie, expresse ou implicite, et décline et annule par la présente toutes les autres garanties, y compris, sans limitation, les garanties ou conditions implicites de qualité marchande, d\'adéquation à un usage particular ou de non-violation de la propriété intellectuelle ou autre violation des droits.',
+        'legal_s5_title': '5. Limitations',
+        'legal_s5_text': 'En aucun cas Language Exchange ou ses fournisseurs ne pourront être tenus responsables de tout dommage (y compris, sans limitation, les dommages pour perte de données ou de profit, ou dus à une interruption d\'activité) découlant de l\'utilisation ou de l\'impossibilité d\'utiliser les matériels sur le site web de Language Exchange.',
     }
 }
 

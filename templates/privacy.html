@@ -5,22 +5,23 @@
 {% block content %}
 <div class="container mt-5 pt-5">
     <div class="card shadow-lg p-5">
-        <h1 class="mb-4">Privacy Policy</h1>
-        <p>Your privacy is important to us. It is Language Exchange's policy to respect your privacy regarding any
-            information we may collect from you across our website.</p>
+        <h1 class="mb-4">{{ t('privacy_title') }}</h1>
+        <p>{{ t('privacy_intro') }}</p>
 
-        <h3>1. Information we collect</h3>
-        <p>We only ask for personal information when we truly need it to provide a service to you. We collect it by fair
-            and lawful means, with your knowledge and consent.</p>
+        <h3>{{ t('privacy_s1_title') }}</h3>
+        <p>{{ t('privacy_s1_text') }}</p>
 
-        <h3>2. Use of Information</h3>
-        <p>We only retain collected information for as long as necessary to provide you with your requested service.
-            What data we store, we’ll protect within commercially acceptable means to prevent loss and theft, as well as
-            unauthorized access, disclosure, copying, use or modification.</p>
+        <h3>{{ t('privacy_s2_title') }}</h3>
+        <p>{{ t('privacy_s2_text') }}</p>
 
-        <h3>3. Cookies</h3>
-        <p>We use cookies to help improve your experience of our website. These are used for session management and to
-            remember your preferences.</p>
+        <h3>{{ t('privacy_s3_title') }}</h3>
+        <p>{{ t('privacy_s3_text') }}</p>
+
+        <h3>{{ t('privacy_s4_title') }}</h3>
+        <p>{{ t('privacy_s4_text') }}</p>
+
+        <h3>{{ t('privacy_s5_title') }}</h3>
+        <p>{{ t('privacy_s5_text') }}</p>
     </div>
 </div>
 {% endblock %}

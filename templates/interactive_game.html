@@ -23,11 +23,11 @@
                 <div class="col-md-4 mb-4">
                     <div class="image-container" data-word="{{ item.word }}" ondragover="event.preventDefault()"
                         ondrop="drop(event)">
-                        {% if item.image_file_path.startswith('http') %}
-                        <img src="{{ item.image_file_path }}" class="img-fluid rounded" alt="{{ item.word }}">
+                        {% if item.image.startswith('http') %}
+                        <img src="{{ item.image }}" class="img-fluid rounded" alt="{{ item.word }}">
                         {% else %}
-                        <img src="{{ url_for('static', filename='images/' + item.image_file_path) }}"
-                            class="img-fluid rounded" alt="{{ item.word }}">
+                        <img src="{{ url_for('static', filename='images/' + item.image) }}" class="img-fluid rounded"
+                            alt="{{ item.word }}">
                         {% endif %}
                         <div class="image-feedback"></div>
                     </div>
@@ -87,9 +87,9 @@
 <script>
     let score = 0;
     let correctMatches = 0;
-    const totalItems = {{ game_items| length }};
-    const currentLevel = {{ level_id }};
-    const totalLevels = {{ total_levels }};
+    const totalItems = {{ game_items| length | tojson }};
+    const currentLevel = {{ level_id| tojson }};
+    const totalLevels = {{ total_levels| tojson }};
 
     // Localization strings
     const strCorrect = "{{ t('game_correct_feedback') }}";

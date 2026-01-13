@@ -5,18 +5,23 @@
 {% block content %}
 <div class="container mt-5 pt-5">
     <div class="card shadow-lg p-5">
-        <h1 class="mb-4">Legal Mentions</h1>
-        <h3>1. Website Presentation</h3>
-        <p>Owner: Maycon</p>
-        <p>Contact: contact@languageexchange.com</p>
+        <h1 class="mb-4">{{ t('legal_title') }}</h1>
+        <h3>{{ t('legal_s1_title') }}</h3>
+        <p>{{ t('legal_s1_owner') }}</p>
+        <p>{{ t('legal_s1_contact') }}</p>
+        <p>{{ t('legal_s1_host') }}</p>
 
-        <h3>2. Terms of Service</h3>
-        <p>By accessing this website, you are agreeing to be bound by these website Terms and Conditions of Use, all
-            applicable laws and regulations, and agree that you are responsible for compliance with any applicable local
-            laws.</p>
+        <h3>{{ t('legal_s2_title') }}</h3>
+        <p>{{ t('legal_s2_text') }}</p>
 
-        <h3>3. Intellectual Property</h3>
-        <p>The materials contained in this website are protected by applicable copyright and trademark law.</p>
+        <h3>{{ t('legal_s3_title') }}</h3>
+        <p>{{ t('legal_s3_text') }}</p>
+
+        <h3>{{ t('legal_s4_title') }}</h3>
+        <p>{{ t('legal_s4_text') }}</p>
+
+        <h3>{{ t('legal_s5_title') }}</h3>
+        <p>{{ t('legal_s5_text') }}</p>
     </div>
 </div>
 {% endblock %}
