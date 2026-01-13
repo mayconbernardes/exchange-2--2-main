@@ -10,6 +10,11 @@
         <div class="mb-3">
             {{ form.title.label(class="form-label") }}
             {{ form.title(class="form-control") }}
+            {% if form.title.errors %}
+            {% for error in form.title.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.text.label(class="form-label") }}
@@ -38,6 +43,11 @@
         <div class="mb-3">
             {{ form.target_language.label(class="form-label") }}
             {{ form.target_language(class="form-control") }}
+            {% if form.target_language.errors %}
+            {% for error in form.target_language.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.submit(class="btn btn-primary") }}
@@ -56,14 +66,14 @@
         modules: {
             toolbar: [
                 ['bold', 'italic', 'underline'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                 ['link', 'clean']
             ]
         }
     });
 
     // Sync content on every change to ensure the hidden textarea is always updated
-    quill.on('text-change', function() {
+    quill.on('text-change', function () {
         var html = quill.root.innerHTML;
         // If the editor is empty, Quill might still have <p><br></p>. 
         // We handle empty state to satisfy DataRequired if needed.
@@ -75,7 +85,7 @@
     document.getElementById('lesson-text-input').value = quill.root.innerHTML;
 
     // Double check on form submit
-    document.getElementById('lesson-form').onsubmit = function() {
+    document.getElementById('lesson-form').onsubmit = function () {
         var html = quill.root.innerHTML;
         if (html === '<p><br></p>') html = '';
         document.getElementById('lesson-text-input').value = html;

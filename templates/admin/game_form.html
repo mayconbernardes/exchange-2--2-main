@@ -10,22 +10,47 @@
         <div class="mb-3">
             {{ form.level_id.label(class="form-label") }}
             {{ form.level_id(class="form-control") }}
+            {% if form.level_id.errors %}
+            {% for error in form.level_id.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.level_title.label(class="form-label") }}
             {{ form.level_title(class="form-control") }}
+            {% if form.level_title.errors %}
+            {% for error in form.level_title.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.image.label(class="form-label") }}
             {{ form.image(class="form-control") }}
+            {% if form.image.errors %}
+            {% for error in form.image.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.word.label(class="form-label") }}
             {{ form.word(class="form-control") }}
+            {% if form.word.errors %}
+            {% for error in form.word.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
         <div class="mb-3">
             {{ form.target_language.label(class="form-label") }}
             {{ form.target_language(class="form-control") }}
+            {% if form.target_language.errors %}
+            {% for error in form.target_language.errors %}
+            <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            {% endif %}
         </div>
 
         <div class="mb-3">

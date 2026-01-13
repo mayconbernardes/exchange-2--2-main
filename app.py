@@ -36,7 +36,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_very_secret_key')  # 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://root:root@localhost/interchange')  # Use environment variable or a default
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024  # Limit of 1 MB for uploads
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Increase limit to 32 MB for audio/images
 
 # Initialize extensions
 db.init_app(app)
@@ -409,14 +409,20 @@ def add_lesson():
         return redirect(url_for('home'))
     form = LessonForm()
     if form.validate_on_submit():
+        if not form.audio.data:
+            flash('Audio file is required for new lessons.', 'danger')
+            return render_template('admin/lesson_form.html', form=form, title='Add Lesson')
+
         # Save the audio file
         audio_filename = secure_filename(form.audio.data.filename)
         audio_path = os.path.join(app.root_path, 'static/audio', audio_filename)
+        os.makedirs(os.path.dirname(audio_path), exist_ok=True)
         form.audio.data.save(audio_path)
 
         # Save the text file
         text_filename = f"{os.path.splitext(audio_filename)[0]}.txt"
         text_path = os.path.join(app.root_path, 'static/doc', text_filename)
+        os.makedirs(os.path.dirname(text_path), exist_ok=True)
         with open(text_path, 'w') as f:
             f.write(form.text.data)
 
@@ -488,6 +494,10 @@ def add_game():
         return redirect(url_for('home'))
     form = GameForm()
     if form.validate_on_submit():
+        if not form.image.data:
+            flash('Image file is required for new game items.', 'danger')
+            return render_template('admin/game_form.html', form=form, title='Add Game')
+
         # Save the image file
         image_filename = secure_filename(form.image.data.filename)
         image_path = os.path.join(app.root_path, 'static/images/games', image_filename)
