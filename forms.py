@@ -105,9 +105,9 @@ class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[
         DataRequired(),
-        Length(min=8, message='A senha deve ter pelo menos 8 caracteres.'),
+        Length(min=8, message='Password must be at least 8 characters long.'),
         Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-               message='A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.')
+               message='Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.')
     ])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')

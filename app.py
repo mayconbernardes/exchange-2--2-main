@@ -129,12 +129,16 @@ def legal():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    # Update validator messages dynamically
+    form.password.validators[1].message = get_t('valid_password_min_length')
+    form.password.validators[2].message = get_t('valid_password_complexity')
+    
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('Account created successfully!', 'success')
+        flash(get_t('auth_flash_register_success'), 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -147,10 +151,11 @@ def login():
             login_user(user, remember=form.remember.data)  # Add remember functionality here
             log_user_activity(user.id, "login", {"email": user.email})
             next_page = request.args.get('next')
+            flash(get_t('auth_flash_logged_in'), 'success')
             return redirect(next_page) if next_page else redirect(url_for('profile'))
         else:
-            flash('Login unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+            flash(get_t('auth_flash_login_failed'), 'danger')
+    return render_template('login.html', title=get_t('auth_login_title'), form=form)
 
 @app.route('/logout')
 def logout():
@@ -190,7 +195,7 @@ def profile():
             current_user.profile_picture = filename
         
         db.session.commit()
-        flash('Your profile has been updated.', 'success')
+        flash(get_t('profile_update_success'), 'success')
         return redirect(url_for('profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -602,11 +607,5 @@ def debug_routes():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
-          # Dev server modo
-# if __name__ == '__main__':
-#     app.run(debug=True,port=5006)
-
-
-# if __name__ == "__main__":
-#     app.run()
+if __name__ == '__main__':
+    app.run(debug=True,port=5006)

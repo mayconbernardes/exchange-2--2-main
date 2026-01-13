@@ -11,28 +11,28 @@
                     <form method="POST" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
                         <div class="mb-3">
-                            {{ form.username.label(class="form-label") }}
+                            <label class="form-label">{{ t('profile_username') }}</label>
                             {{ form.username(class="form-control") }}
                             {% for error in form.username.errors %}
                             <span class="text-danger">{{ error }}</span><br>
                             {% endfor %}
                         </div>
                         <div class="mb-3">
-                            {{ form.native_language.label(class="form-label") }}
+                            <label class="form-label">{{ t('profile_native') }}</label>
                             {{ form.native_language(class="form-control") }}
                             {% for error in form.native_language.errors %}
                             <span class="text-danger">{{ error }}</span><br>
                             {% endfor %}
                         </div>
                         <div class="mb-3">
-                            {{ form.learning_language.label(class="form-label") }}
+                            <label class="form-label">{{ t('profile_learning') }}</label>
                             {{ form.learning_language(class="form-control") }}
                             {% for error in form.learning_language.errors %}
                             <span class="text-danger">{{ error }}</span><br>
                             {% endfor %}
                         </div>
                         <div class="mb-3">
-                            {{ form.interests_selection.label(class="form-label") }}
+                            <label class="form-label">{{ t('profile_interests') }}</label>
                             <div class="form-control" style="height: auto;">
                                 {% for subfield in form.interests_selection %}
                                 <div class="form-check form-check-inline">
@@ -46,14 +46,14 @@
                             {% endfor %}
                         </div>
                         <div class="mb-3">
-                            {{ form.interests.label(class="form-label") }}
+                            <label class="form-label">{{ t('profile_interests') }} ({{ t('admin_form_text') }})</label>
                             {{ form.interests(class="form-control") }}
                             {% for error in form.interests.errors %}
                             <span class="text-danger">{{ error }}</span><br>
                             {% endfor %}
                         </div>
                         <div class="mb-3">
-                            {{ form.profile_picture.label(class="form-label") }}
+                            <label class="form-label">{{ t('admin_form_image') }}</label>
                             {{ form.profile_picture(class="form-control") }}
                             {% for error in form.profile_picture.errors %}
                             <span class="text-danger">{{ error }}</span><br>

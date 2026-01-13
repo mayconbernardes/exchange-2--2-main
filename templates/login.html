@@ -5,44 +5,48 @@
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="card shadow-lg border-0 p-4 animate__animated animate__fadeInUp">
-                <h1 class="mb-4 text-center text-primary">Login</h1>
-                
+                <h1 class="mb-4 text-center text-primary">{{ t('auth_login_title') }}</h1>
+
                 <form method="POST" action="{{ url_for('login') }}">
                     {{ form.hidden_tag() }}
                     <!-- Email Field -->
                     <div class="mb-3">
-                        {{ form.email.label(class="form-label") }}
-                        {{ form.email(class="form-control form-control-lg", placeholder="Enter your email", autofocus=True) }}
+                        <label class="form-label">{{ t('form_email') }}</label>
+                        {{ form.email(class="form-control form-control-lg", placeholder=t('form_placeholder_email'),
+                        autofocus=True) }}
                         {% if form.email.errors %}
-                            <span class="text-danger">{{ form.email.errors[0] }}</span>
+                        <span class="text-danger">{{ form.email.errors[0] }}</span>
                         {% endif %}
                     </div>
 
                     <!-- Password Field -->
                     <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control form-control-lg", placeholder="Enter your password") }}
+                        <label class="form-label">{{ t('form_password') }}</label>
+                        {{ form.password(class="form-control form-control-lg",
+                        placeholder=t('form_placeholder_login_password')) }}
                         {% if form.password.errors %}
-                            <span class="text-danger">{{ form.password.errors[0] }}</span>
+                        <span class="text-danger">{{ form.password.errors[0] }}</span>
                         {% endif %}
                     </div>
 
                     <!-- Remember Me -->
                     <div class="mb-3 form-check">
-                        {{ form.remember(class="form-check-input") }} 
-                        {{ form.remember.label(class="form-check-label") }}
+                        {{ form.remember(class="form-check-input") }}
+                        <label class="form-check-label">{{ t('form_remember_me') }}</label>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="d-grid">
-                        {{ form.submit(class="btn btn-primary btn-lg animate__animated animate__pulse") }}
+                        <button type="submit" class="btn btn-primary btn-lg animate__animated animate__pulse">
+                            {{ t('form_submit_login') }}
+                        </button>
                     </div>
                 </form>
 
                 <!-- Register Link -->
                 <div class="mt-3 text-center">
                     <a href="{{ url_for('register') }}" class="text-decoration-none text-muted">
-                        Don't have an account? Register here.
+                        {{ t('form_no_account') }} {{ t('form_register_here') }}.
                     </a>
                 </div>
             </div>
