@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Admin Panel - {{ super() }}{% endblock %}
+{% block title %}{{ t('admin_panel_title') }} - {{ super() }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Admin Panel</h1>
+    <h1 class="mb-4">{{ t('admin_panel_title') }}</h1>
     <div class="list-group">
         <a href="{{ url_for('admin_lessons') }}" class="list-group-item list-group-item-action">
-            Manage Lessons
+            {{ t('admin_manage_lessons') }}
         </a>
         <a href="{{ url_for('admin_games') }}" class="list-group-item list-group-item-action">
-            Manage Interactive Games
+            {{ t('admin_manage_games') }}
         </a>
     </div>
 </div>

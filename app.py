@@ -95,6 +95,11 @@ def log_user_activity(user_id, activity_type, details=None):
 
 
 # Routes
+# Helper function for translations in routes
+def get_t(key):
+    lang = session.get('lang', 'en')
+    return TRANSLATIONS.get(lang, TRANSLATIONS['en']).get(key, key)
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -405,13 +410,13 @@ def admin_games():
 @login_required
 def add_lesson():
     if current_user.id != 1:
-        flash('You are not authorized to access this page.', 'danger')
+        flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     form = LessonForm()
     if form.validate_on_submit():
         if not form.audio.data:
-            flash('Audio file is required for new lessons.', 'danger')
-            return render_template('admin/lesson_form.html', form=form, title='Add Lesson')
+            flash(get_t('admin_flash_audio_required'), 'danger')
+            return render_template('admin/lesson_form.html', form=form, title=get_t('admin_title_add_lesson'))
 
         # Save the audio file
         audio_filename = secure_filename(form.audio.data.filename)
@@ -434,15 +439,15 @@ def add_lesson():
         )
         db.session.add(new_lesson)
         db.session.commit()
-        flash('Lesson added successfully!', 'success')
+        flash(get_t('admin_flash_lesson_added'), 'success')
         return redirect(url_for('admin_lessons'))
-    return render_template('admin/lesson_form.html', form=form, title='Add Lesson')
+    return render_template('admin/lesson_form.html', form=form, title=get_t('admin_title_add_lesson'))
 
 @app.route('/admin/lessons/edit/<int:lesson_id>', methods=['GET', 'POST'])
 @login_required
 def edit_lesson(lesson_id):
     if current_user.id != 1:
-        flash('You are not authorized to access this page.', 'danger')
+        flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     lesson = TextAudioLesson.query.get_or_404(lesson_id)
     form = LessonForm(obj=lesson)
@@ -454,7 +459,9 @@ def edit_lesson(lesson_id):
         if form.audio.data:
             # Delete old audio file
             if lesson.audio_file_path:
-                os.remove(os.path.join(app.root_path, 'static', lesson.audio_file_path))
+                old_path = os.path.join(app.root_path, 'static', lesson.audio_file_path)
+                if os.path.exists(old_path):
+                    os.remove(old_path)
             # Save new audio file
             audio_filename = secure_filename(form.audio.data.filename)
             audio_path = os.path.join(app.root_path, 'static/audio', audio_filename)
@@ -462,9 +469,9 @@ def edit_lesson(lesson_id):
             lesson.audio_file_path = os.path.join('audio', audio_filename)
 
         db.session.commit()
-        flash('Lesson updated successfully!', 'success')
+        flash(get_t('admin_flash_lesson_updated'), 'success')
         return redirect(url_for('admin_lessons'))
-    return render_template('admin/lesson_form.html', form=form, title='Edit Lesson')
+    return render_template('admin/lesson_form.html', form=form, title=get_t('admin_title_edit_lesson'))
 
 @app.route('/admin/lessons/delete/<int:lesson_id>', methods=['POST'])
 @login_required
@@ -483,20 +490,20 @@ def delete_lesson(lesson_id):
         os.remove(text_path)
     db.session.delete(lesson)
     db.session.commit()
-    flash('Lesson deleted successfully!', 'success')
+    flash(get_t('admin_flash_lesson_deleted'), 'success')
     return redirect(url_for('admin_lessons'))
 
 @app.route('/admin/games/add', methods=['GET', 'POST'])
 @login_required
 def add_game():
     if current_user.id != 1:
-        flash('You are not authorized to access this page.', 'danger')
+        flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     form = GameForm()
     if form.validate_on_submit():
         if not form.image.data:
-            flash('Image file is required for new game items.', 'danger')
-            return render_template('admin/game_form.html', form=form, title='Add Game')
+            flash(get_t('admin_flash_image_required'), 'danger')
+            return render_template('admin/game_form.html', form=form, title=get_t('admin_title_add_game'))
 
         # Save the image file
         image_filename = secure_filename(form.image.data.filename)
@@ -513,15 +520,15 @@ def add_game():
         )
         db.session.add(new_game)
         db.session.commit()
-        flash('Game item added successfully!', 'success')
+        flash(get_t('admin_flash_game_added'), 'success')
         return redirect(url_for('admin_games'))
-    return render_template('admin/game_form.html', form=form, title='Add Game')
+    return render_template('admin/game_form.html', form=form, title=get_t('admin_title_add_game'))
 
 @app.route('/admin/games/edit/<int:game_id>', methods=['GET', 'POST'])
 @login_required
 def edit_game(game_id):
     if current_user.id != 1:
-        flash('You are not authorized to access this page.', 'danger')
+        flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     game = InteractiveGame.query.get_or_404(game_id)
     form = GameForm()
@@ -545,29 +552,31 @@ def edit_game(game_id):
             game.image_file_path = os.path.join('games', image_filename)
 
         db.session.commit()
-        flash('Game item updated successfully!', 'success')
+        flash(get_t('admin_flash_game_updated'), 'success')
         return redirect(url_for('admin_games'))
     elif request.method == 'GET':
         form.level_id.data = game.level_id
         form.level_title.data = game.level_title
         form.word.data = game.word
         form.target_language.data = game.target_language
-    return render_template('admin/game_form.html', form=form, title='Edit Game')
+    return render_template('admin/game_form.html', form=form, title=get_t('admin_title_edit_game'))
 
 
 @app.route('/admin/games/delete/<int:game_id>', methods=['POST'])
 @login_required
 def delete_game(game_id):
     if current_user.id != 1:
-        flash('You are not authorized to access this page.', 'danger')
+        flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     game = InteractiveGame.query.get_or_404(game_id)
     # Delete image file
     if game.image_file_path:
-        os.remove(os.path.join(app.root_path, 'static', game.image_file_path))
+        image_path = os.path.join(app.root_path, 'static/images', game.image_file_path)
+        if os.path.exists(image_path):
+            os.remove(image_path)
     db.session.delete(game)
     db.session.commit()
-    flash('Game deleted successfully!', 'success')
+    flash(get_t('admin_flash_game_deleted'), 'success')
     return redirect(url_for('admin_games'))
 
 @app.route('/debug-routes')

@@ -8,7 +8,7 @@
     <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div class="mb-3">
-            {{ form.level_id.label(class="form-label") }}
+            <label class="form-label">{{ t('admin_form_level_id') }}</label>
             {{ form.level_id(class="form-control") }}
             {% if form.level_id.errors %}
             {% for error in form.level_id.errors %}
@@ -17,7 +17,7 @@
             {% endif %}
         </div>
         <div class="mb-3">
-            {{ form.level_title.label(class="form-label") }}
+            <label class="form-label">{{ t('admin_form_level_title') }}</label>
             {{ form.level_title(class="form-control") }}
             {% if form.level_title.errors %}
             {% for error in form.level_title.errors %}
@@ -26,7 +26,7 @@
             {% endif %}
         </div>
         <div class="mb-3">
-            {{ form.image.label(class="form-label") }}
+            <label class="form-label">{{ t('admin_form_image') }}</label>
             {{ form.image(class="form-control") }}
             {% if form.image.errors %}
             {% for error in form.image.errors %}
@@ -35,7 +35,7 @@
             {% endif %}
         </div>
         <div class="mb-3">
-            {{ form.word.label(class="form-label") }}
+            <label class="form-label">{{ t('admin_form_word') }}</label>
             {{ form.word(class="form-control") }}
             {% if form.word.errors %}
             {% for error in form.word.errors %}
@@ -44,7 +44,7 @@
             {% endif %}
         </div>
         <div class="mb-3">
-            {{ form.target_language.label(class="form-label") }}
+            <label class="form-label">{{ t('admin_form_target_lang') }}</label>
             {{ form.target_language(class="form-control") }}
             {% if form.target_language.errors %}
             {% for error in form.target_language.errors %}
@@ -54,7 +54,7 @@
         </div>
 
         <div class="mb-3">
-            {{ form.submit(class="btn btn-primary") }}
+            <button type="submit" class="btn btn-primary">{{ t('admin_form_submit') }}</button>
         </div>
     </form>
 </div>

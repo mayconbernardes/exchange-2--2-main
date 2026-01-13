@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Manage Lessons - {{ super() }}{% endblock %}
+{% block title %}{{ t('admin_lessons_heading') }} - {{ super() }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Manage Lessons</h1>
-    <a href="{{ url_for('add_lesson') }}" class="btn btn-primary mb-3">Add New Lesson</a>
+    <h1 class="mb-4">{{ t('admin_lessons_heading') }}</h1>
+    <a href="{{ url_for('add_lesson') }}" class="btn btn-primary mb-3">{{ t('admin_add_new_lesson') }}</a>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Target Language</th>
-                <th>Actions</th>
+                <th>{{ t('admin_lesson_table_title') }}</th>
+                <th>{{ t('admin_lesson_table_lang') }}</th>
+                <th>{{ t('admin_lesson_table_actions') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -20,12 +20,14 @@
                 <td>{{ lesson.title }}</td>
                 <td>{{ lesson.target_language }}</td>
                 <td>
-                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{{ url_for('edit_lesson', lesson_id=lesson.id) }}" class="btn btn-sm btn-warning">{{
+                        t('admin_btn_edit') }}</a>
                     <form action="{{ url_for('delete_lesson', lesson_id=lesson.id) }}" method="POST"
                         style="display:inline;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <button type="submit" class="btn btn-sm btn-danger"
-                            onclick="return confirm('Are you sure?')">Delete</button>
+                            onclick="return confirm({{ t('admin_confirm_delete')|tojson }})">{{ t('admin_btn_delete')
+                            }}</button>
                     </form>
 
                 </td>
