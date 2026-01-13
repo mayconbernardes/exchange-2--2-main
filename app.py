@@ -608,5 +608,5 @@ def load_user(user_id):
 #     app.run(debug=True,port=5006)
 
 
-if __name__ == "__main__":
-    app.run()
+# if __name__ == "__main__":
+#     app.run()
