@@ -39,14 +39,19 @@ cloudinary.config(secure=True)
 
 # Initialize Flask app
 app = Flask(__name__, static_folder='static', static_url_path='/static')
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_very_secret_key')  # Use environment variable or a default
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://root:root@localhost/interchange')  # Use environment variable or a default
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_very_secret_key')
+database_url = os.environ.get('DATABASE_URL', 'postgresql://root:root@localhost/interchange')
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Increase limit to 32 MB for audio/images
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 
 # Initialize extensions
 db.init_app(app)
+with app.app_context():
+    db.create_all()
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
