@@ -212,6 +212,25 @@ def profile():
             form.interests.data = ''
     return render_template('profile.html', form=form, language_map={lang[0]: lang[1] for lang in LANGUAGES})
 
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    # Update validator messages dynamically
+    form.new_password.validators[1].message = get_t('valid_password_min_length')
+    form.new_password.validators[2].message = get_t('valid_password_complexity')
+
+    if form.validate_on_submit():
+        if bcrypt.check_password_hash(current_user.password, form.old_password.data):
+            hashed_password = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
+            current_user.password = hashed_password
+            db.session.commit()
+            flash(get_t('profile_password_success'), 'success')
+            return redirect(url_for('profile'))
+        else:
+            flash(get_t('profile_password_error'), 'danger')
+    return render_template('change_password.html', form=form)
+
 @app.route('/flashcards', methods=['GET', 'POST'])
 @login_required
 def flashcards():
@@ -388,7 +407,7 @@ def reset_game():
 @app.route('/admin')
 @login_required
 def admin():
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('home'))
     return render_template('admin/index.html')
@@ -396,7 +415,7 @@ def admin():
 @app.route('/admin/lessons')
 @login_required
 def admin_lessons():
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('home'))
     lessons = TextAudioLesson.query.all()
@@ -405,7 +424,7 @@ def admin_lessons():
 @app.route('/admin/games')
 @login_required
 def admin_games():
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash('You are not authorized to access this page.', 'danger')
         return redirect(url_for('home'))
     games = InteractiveGame.query.all()
@@ -414,7 +433,7 @@ def admin_games():
 @app.route('/admin/lessons/add', methods=['GET', 'POST'])
 @login_required
 def add_lesson():
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     form = LessonForm()
@@ -451,7 +470,7 @@ def add_lesson():
 @app.route('/admin/lessons/edit/<int:lesson_id>', methods=['GET', 'POST'])
 @login_required
 def edit_lesson(lesson_id):
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     lesson = TextAudioLesson.query.get_or_404(lesson_id)
@@ -481,7 +500,7 @@ def edit_lesson(lesson_id):
 @app.route('/admin/lessons/delete/<int:lesson_id>', methods=['POST'])
 @login_required
 def delete_lesson(lesson_id):
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     lesson = TextAudioLesson.query.get_or_404(lesson_id)
@@ -510,7 +529,7 @@ def delete_lesson(lesson_id):
 @app.route('/admin/games/add', methods=['GET', 'POST'])
 @login_required
 def add_game():
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     form = GameForm()
@@ -541,7 +560,7 @@ def add_game():
 @app.route('/admin/games/edit/<int:game_id>', methods=['GET', 'POST'])
 @login_required
 def edit_game(game_id):
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     game = InteractiveGame.query.get_or_404(game_id)
@@ -579,7 +598,7 @@ def edit_game(game_id):
 @app.route('/admin/games/delete/<int:game_id>', methods=['POST'])
 @login_required
 def delete_game(game_id):
-    if current_user.id != 1:
+    if not current_user.is_admin:
         flash(get_t('admin_flash_unauthorized'), 'danger')
         return redirect(url_for('home'))
     game = InteractiveGame.query.get_or_404(game_id)

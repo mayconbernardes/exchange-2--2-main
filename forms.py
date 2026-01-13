@@ -129,5 +129,13 @@ class GameForm(FlaskForm):
     target_language = SelectField('Target Language', choices=LANGUAGES, validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-
-
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField('Old Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[
+        DataRequired(),
+        Length(min=8, message='Password must be at least 8 characters long.'),
+        Regexp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+               message='Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.')
+    ])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
