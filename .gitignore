@@ -16,3 +16,8 @@ flask_session/
 .DS_Store
 static/.DS_Store
 templates/.DS_Store
+
+# Documentation (Private)
+questions.md
+MVC.md
+deployment_guide.md
