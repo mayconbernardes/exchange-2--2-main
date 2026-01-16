@@ -1,0 +1,384 @@
+DOSSIER DE PROJET PROFESSIONNEL
+Titre professionnel : Concepteur Développeur d’Applications (Niveau 6 / Bac+3)
+
+PROJET : INTERCHANGE – SOLUTION DIGITALE D’APPRENTISSAGE LINGUISTIQUE IMMERSIF
+
+AUTEUR : [VOTRE NOM]
+SESSION : 2024/2025
+
+================================================================================
+SOMMAIRE DÉTAILLÉ
+================================================================================
+
+PRÉFACE & REMERCIEMENTS ..................................................... 3
+
+1. INTRODUCTION ET PRÉSENTATION DU PROJET ..................................... 5
+   1.1. Parcours personnel e motivations du candidat .......................... 5
+   1.2. Contexte du marché et analyse des besoins ............................. 7
+   1.3. Objectifs stratégiques et valeurs d’Interchange ....................... 9
+   1.4. Présentation synthétique de l’écosystème .............................. 11
+   1.5. Étude des Publics cibles (Personas détaillés) ......................... 13
+
+2. CONCEPTION ET ANALYSE (PHASE PRÉ-DÉVELOPPEMENT) ............................ 16
+   2.1. Analyse fonctionnelle et expression des besoins ....................... 16
+   2.2. Product Backlog et User Stories (Détail acceptation) .................. 18
+   2.3. Diagramme de flux et règles de gestion métier ......................... 22
+   2.4. Design System et Stratégie de Maquettage (UI/UX) ...................... 25
+   2.5. Architecture des données (PostgreSQL & MongoDB) ....................... 28
+   2.6. Modélisation technique (MCD, MLD, MPD) ................................ 31
+   2.7. Modélisation UML (Cas d’utilisation, Séquence, Classes) ............... 35
+   2.8. Méthodologie agile et Organisation (Scrum/Sprints) .................... 40
+
+3. RÉALISATION TECHNIQUE ET DÉVELOPPEMENT .................................... 44
+   3.1. Analyse de la Stack technique (Justifications) ........................ 44
+   3.2. Architecture logicielle (MVC & Modularité) ............................ 47
+   3.3. Développement Backend (Logique Flask et APIs) ......................... 50
+   3.4. Développement Frontend (Interface dynamique et Three.js) .............. 55
+   3.5. Documentation des extraits de code critiques .......................... 59
+
+4. SÉCURITÉ, ACCESSIBILITÉ ET ÉCOCONCEPTION ................................... 64
+   4.1. Stratégie de cybersécurité (OWASP & Talisman) ......................... 64
+   4.2. Accessibilité numérique (Normes RGAA / WCAG) .......................... 68
+   4.3. Écoconception et Optimisation énergétique ............................ 72
+
+5. DÉPLOIEMENT, GESTION CLOUD ET CI/CD ....................................... 76
+   5.1. Infrastructures Cloud (Render, Neon, Cloudinary) ...................... 76
+   5.2. Pipeline d'intégration et déploiement continu ......................... 80
+   5.3. Supervision et Maintenance corrective/évolutive ....................... 83
+
+6. BILAN, COMPÉTENCES ET PERSPECTIVES ......................................... 87
+   6.1. Bilan personnel et auto-évaluation .................................... 87
+   6.2. Tableau de mise en relation des compétences ........................... 89
+   6.3. Roadmap fonctionnelle et Améliorations futures ........................ 92
+
+7. ANNEXES ................................................................... 95
+
+================================================================================
+PRÉFACE & REMERCIEMENTS
+================================================================================
+
+Le présent dossier constitue le socle de ma validation pour le titre professionnel de Concepteur Développeur d’Applications. Ce projet, Interchange, n’est pas uniquement une démonstration technique de savoir-faire en programmation, mais une réponse structurée à un enjeu sociétal majeur : l’inclusion par la maîtrise des langues.
+
+Ce projet a été développé dans une démarche de rigueur académique, en respectant les standards de l’industrie pour le développement web moderne. Chaque ligne de code, chaque choix architectural et chaque interface utilisateur ont été réfléchis pour offrir une solution robuste, sécurisée et centrée sur l’humain.
+
+Je tiens à exprimer mes plus sincères remerciements à :
+
+● L’équipe pédagogique, pour la qualité de l’enseignement dispensé durant cette année de formation, pour votre patience et pour nous avoir poussés à l’excellence.
+● Mes collègues de promotion, pour l’entraide constante, les sessions de debug collectives et pour l’ambiance de travail stimulante.
+● Ma famille et mes proches, pour leur soutien moral indéfectible durant les phases les plus intenses de ce projet.
+● Mes mentors techniques, qui m’ont aidé à appréhender les complexités des infrastructures Cloud et de la cybersécurité.
+
+================================================================================
+1. INTRODUCTION ET PRÉSENTATION DU PROJET INTERCHANGE
+================================================================================
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> COLOQUE AQUI UMA CAPTURA DE TELA DA SUA PÁGINA INICIAL (HOME PAGE)
+> Mostre a hero section com a animação Three.js!
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: HOME_PAGE_VIBRANT_DESIGN]
+> [!TIP]
+> **Onde encontrar:** Execute o projeto (`python app.py`), abra o navegador em `http://127.0.0.1:5000/`.
+> **O que capturar:** A parte superior da página inicial (Hero Section) mostrando o título "Interchange" e a animação de fundo (partículas/globos). Certifique-se de que parece moderno e vibrante.
+
+1.1. Parcours personnel et motivations du candidat
+Originaire d'un environnement professionnel axé sur [VOTRE DOMAINE], j'ai entamé une reconversion vers le développement logiciel avec une soif d'apprendre et de bâtir. Mon parcours n'est pas linéaire, ce qui constitue ma force : j'apporte avec moi une capacité de gestion de projet, une écoute client et une vision business que j'ai pu fusionner avec mes nouvelles compétences techniques de Concepteur Développeur.
+
+Ma motivation pour Interchange vient d'un constat simple : l'apprentissage d'une langue est souvent perçu comme une corvée. J'ai voulu utiliser le "Gaming" et le "Vibrant Design" pour changer ce paradigme. La plateforme doit être un plaisir visuel et interactif avant d'être un outil d'étude. Mon objectif est d'aider les utilisateurs à surmonter la "barrière de la première leçon" en leur offrant un environnement gratifiant dès la première seconde de connexion.
+
+1.2. Contexte du marché et analyse des besoins
+Le marché de l'EdTech (Education Technology) est en pleine explosion, porté par la mondialisation et le besoin constant de communication interculturelle. Cependant, beaucoup d'applications mobiles privilégient la quantité sur la qualité ou imposent des abonnements onéreux qui découragent les apprenants occasionnels. Interchange se positionne comme une plateforme hybride, gratuite pour l'utilisateur final, et hautement personnalisable.
+
+Analyse approfondie des besoins :
+● Besoin de personnalisation : Chaque utilisateur apprend différemment. Certains sont visuels, d'autres auditifs.
+● Besoin de mobilité : La plateforme doit être aussi performante sur un écran de 6 pouces que sur un moniteur 27 pouces.
+● Besoin d'interactivité : L'apprentissage passif (lecture) ne suffit pas ; la manipulation physique (Drag & Drop) ancre le savoir.
+● Besoin de structure : Les leçons doivent être hiérarchisées pour éviter de submerger l'apprenant sous un déluge d'informations.
+
+1.3. Objectifs stratégiques et valeurs d’Interchange
+L'objectif stratégique à long terme est de créer une application web progressive (PWA) qui peut être installée sur n'importe quel appareil. 
+Valeurs Clés de l'entreprise :
+● Accessibilité : La connaissance ne doit pas avoir de barrière financière.
+● Innovation : Utilisation de technologies de pointe comme Three.js pour une UI qui "respire" et qui vit.
+● Éthique : Aucune donnée utilisateur n'est revendue à des tiers ; la vie privée est codée en dur dans l'architecture.
+● Communauté : Permettre aux apprenants de se sentir membres d'un mouvement global d'échange linguistique.
+
+1.4. Présentation synthétique de l’écosystème technique
+Interchange repose sur une architecture moderne conçue pour la performance :
+● Cloud First : Aucun actif n'est stocké en local sur le serveur applicatif.
+● Découplage : Le front-end et le back-end communiquent de manière fluide, permettant des mises à jour indépendantes.
+● Multi-Cloud : Utilisation combinée de Render (Compute), Neon (SQL), Cloudinary (Assets) et MongoDB (Logging).
+
+1.5. Étude des Publics cibles (Personas détaillés)
+[Persona 1 : Marc, 35 ans]
+Profil : Cadre commercial en déplacement constant.
+Problématique : "Je veux réviser mon anglais technique entre deux vols mais les applis actuelles sont trop enfantines."
+Besoins : Leçons audio de haute qualité et flashcards éditables.
+
+[Persona 2 : Sophie, 19 ans]
+Profil : Étudiante en langues étrangères.
+Problématique : "Je mémorise mal les listes de vocabulaire statiques de l'université."
+Besoins : Jeux interactifs visuels pour associer les images aux concepts.
+
+| **US18** | Utilisateur | Rester connecté | Option "Se souvenir de moi" (Persistent Session). | Moyenne |
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> COLOQUE AQUI UMA CAPTURA DE TELA DO SEU TRELLO OU BACKLOG
+> Mostre as colunas "Backlog", "To Do", "In Progress", "Code Review", "Done".
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: TRELLO_SCRUM_EXPANDED]
+> [!TIP]
+> **Onde encontrar:** Acesse o seu quadro no Trello (ou ferramenta similar como Jira/GitHub Projects).
+> **O que capturar:** Uma visão geral do quadro com as colunas: "Backlog", "To Do" (A Fazer), "In Progress" (Em Curso), "Done" (Terminado).
+> **Dica:** Se não tiver um real, crie um quadro rápido com 5-6 cartões fictícios (ex: "Criar Login", "Design Home", "Configurar DB") para a captura.
+
+2.3. Diagramme de flux et règles de gestion métier
+Les règles de gestion (Business Rules) sont critiques :
+● R01 : Un utilisateur ne peut pas accéder au niveau N+1 sans avoir 80% au niveau N.
+● R02 : Les administrateurs (ID=1) héritent de droits spécifiques sur la modération.
+● R03 : Suppression en cascade : si un profil est supprimé, ses flashcards le sont aussi.
+
+2.4. Design System et Stratégie de Maquettage (UI/UX)
+Ma stratégie design repose sur le "Glassmorphism" et les gradients profonds. J'ai utilisé Figma pour les maquettes haute fidélité.
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> COLOQUE AQUI UMA CAPTURA DAS SUAS MAQUETTES (FIGMA)
+> Mostre as versões Desktop e Mobile.
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: FIGMA_DESIGNS_DESKTOP_MOBILE]
+> [!TIP]
+> **Onde encontrar:** Seu projeto no Figma ou Adobe XD.
+> **Alternativa:** Se não tiver maquettes separadas, abra o site rodando localmente. Tire um print da versão Desktop. Depois, aperte F12 (DevTools), ative o ícone de celular (Device Toolbar) e tire um print da versão Mobile.
+> **Legenda:** Coloque os dois prints lado a lado no documento final.
+
+2.5. Architecture des données
+L'application utilise une architecture SQL / NoSQL :
+● Données Transactionnelles : PostgreSQL (Neon.tech).
+● Logs Techniques : MongoDB (Stockage de l'activité utilisateur).
+
+2.6. Modélisation technique (MCD, MLD, MPD)
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> **AQUI VAI SEU MCD (Modèle Conceptuel de Données)**
+> Mostre as entidades User, Flashcard, Lesson e Game.
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: DIAGRAMA_MCD]
+> [!TIP]
+> **Onde encontrar:** Ferramenta de modelagem (Mocodo, Looping, WinDesign).
+> **Conteúdo:** Deve mostrar as Entidades (Quadrados) e as Relações (Ovais).
+> **Entidades chave:** User, Flashcard, Lesson, Quiz/Game.
+> **Cardinalidades:** Ex: User 0,n --- possui --- 1,1 Flashcard.
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> **AQUI VAI SEU MLD (Modèle Logique de Données)**
+> Mostre as chaves estrangeiras (user_id -> User.id).
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: DIAGRAMA_MLD]
+> [!TIP]
+> **Onde encontrar:** Derivado do MCD.
+> **Conteúdo:** Mostre a estrutura de tabelas com Chaves Primárias (PK) sublinhadas e Chaves Estrangeiras (FK) com #.
+> **Exemplo:** Flashcard (id, term, definition, #user_id).
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> **AQUI VAI SEU MPD (Modèle Physique de Données)**
+> Print do código SQL ou do schema gerado pelo SQLAlchemy.
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: SCHEMA_SQL_POSTGRES]
+> [!TIP]
+> **Onde encontrar:** Abra o arquivo `models.py` no VS Code.
+> **O que capturar:** Um print das classes Python `class User(db.Model)` e `class Flashcard(db.Model)`.
+> **Alternativa:** Se usar DBeaver ou PgAdmin, tire um print do diagrama ER gerado automaticamente.
+
+2.7. Modélisation UML
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> **AQUI VAI SEU DIAGRAMME DE CAS D’UTILISATION**
+> Mostre as ações do User vs Admin.
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: UML_USE_CASE]
+> [!TIP]
+> **Onde encontrar:** Crie no Draw.io ou StarUML.
+> **Atores:** "Apprenant" (Aluno) e "Administrateur" (Admin).
+> **Casos de uso:** "S'inscrire", "Se connecter", "Jouer au jeu", "Créer une leçon (Admin)".
+> **Relações:** Mostre os "Includes" (ex: Jouer necessita Se connecter).
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> **AQUI VAI SEU DIAGRAMME DE SÉQUENCE**
+> Mostre o fluxo de registro ou login.
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: UML_SEQUENCE_AUTH]
+> [!TIP]
+> **Onde encontrar:** Draw.io ou ferramenta UML.
+> **Cenário:** Processo de Login.
+> **Participantes:** Ator (User) -> Interface (Login Page) -> Controller (App Route) -> Model (User DB).
+> **Fluxo:** User envia form -> Controller verifica Hash -> DB retorna User -> Controller cria Sessão -> Redireciona Home.
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> **AQUI VAI SEU DIAGRAMME DE CLASSES**
+> Reflita os modelos SQLAlchemy (app.py / models.py).
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: UML_CLASS_DIAGRAM]
+> [!TIP]
+> **Onde encontrar:** Draw.io ou gerado pelo PyCharm.
+> **Classes:** User, TextAudioLesson, InteractiveGame, Flashcard.
+> **Métodos:** listar métodos principais como `check_password()`, `get_id()`.
+
+2.8. Méthodologie agile et Organisation (Scrum/Sprints)
+Le projet a été structuré en 4 Sprints de 2 semaines :
+● Sprint 1 : Base technique & Auth.
+● Sprint 2 : Cœur de l'app (Flashcards/Leçons).
+● Sprint 3 : Gameplay (Interface de jeu JS).
+● Sprint 4 : Cloud & Déploiement.
+
+================================================================================
+3. RÉALISATION TECHNIQUE ET DÉVELOPPEMENT
+================================================================================
+
+3.1. Analyse de la Stack technique
+● Python 3.12 : Pour sa robustesse et sa librairie standard.
+● Flask : Micro-framework permettant une architecture flexible.
+● Gunicorn : Serveur WSGI pour la mise en production sur Render.
+● Three.js : Bibliothèque 3D pour l'UI.
+
+3.2. Architecture logicielle (MVC & Modularité)
+[Modèle] : SQL Alchemy définit les structures.
+[Vue] : Templates Jinja2 pour le dynamisme.
+[Contrôleur] : Routes Flask gèrent le trafic et la logique.
+
+3.3. Développement Backend
+Le backend gère l'authentification via `Flask-Login` et la sécurité via `Bcrypt`. Chaque mot de passe est haché avant insertion.
+
+3.4. Développement Frontend
+L'usage intensif de CSS Grid et Flexbox assure le responsive. Le fond de la home page est un univers de particules piloté par Three.js.
+
+3.5. Documentation des extraits de code critiques
+[CÓDIGO: Lógica de Progresso do Jogo no app.py]
+> [!TIP]
+> **Onde encontrar:** Arquivo `app.py`.
+> **Linhas aproximadas:** Busque pela função `@app.route('/game/...')`. Capture a parte onde o score é calculado ou salvo.
+[CÓDIGO: Integração com Cloudinary no app.py]
+> [!TIP]
+> **Onde encontrar:** Arquivo `app.py`.
+> **Linhas aproximadas:** Busque por `cloudinary.uploader.upload`. Geralmente dentro das rotas de upload (`/add_lesson` ou `/register`).
+[CÓDIGO: Sistema de Tradução no translations.py]
+> [!TIP]
+> **Onde encontrar:** Arquivo `translations.py` (arquivo inteiro ou o dicionário principal) e `app.py` (onde a função `get_locale` é usada).
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> COLOQUE AQUI CAPTURAS DO SEU CÓDIGO (Snippets do app.py)
+> Escolha partes importantes como o login e o upload de arquivos.
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: CODE_SNIPPET_APP_PY]
+> [!TIP]
+> **Onde encontrar:** Arquivo `app.py`.
+> **O que capturar:** Capture as importações iniciais e a configuração do `Flask-Bcrypt` e `Flask-Login`. Isso demonstra a configuração de segurança.
+> **Linhas:** Geralmente as primeiras 50-80 linhas do arquivo.
+
+================================================================================
+4. SÉCURITÉ, ACCESSIBILITÉ ET ÉCOCONCEPTION
+================================================================================
+
+4.1. Stratégie de cybersécurité
+● Protection CSRF : Token sur chaque formulaire.
+● Talisman : Force le HTTPS et définit les politiques CSP.
+● Bcrypt : Hachage sécurisé (Argon2 alternative supportée).
+● Rate Limiting : Limite le nombre de requêtes par IP pour éviter le brute-force.
+
+4.2. Accessibilité numérique (Normes RGAA / WCAG)
+● Contraste : Ratio minimum de 4.5:1.
+● Sémantique : Utilização correta de <header>, <nav>, <main>, <footer>.
+● Alt tags : Todas as imagens têm descrições para leitores de tela.
+
+4.3. Écoconception
+● Optimisation images : Cloudinary livre des fichiers WebP plus légers.
+● Caching : Flask-Caching réduit les appels à la base de données.
+● Minimalisme : Code propre et éviter les librairies JS inutiles.
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> COLOQUE AQUI UM PRINT DO SCORE DE PERFORMANCE (Lighthouse)
+> Mostre que o site é rápido e bem otimizado!
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: LIGHTHOUSE_PERFORMANCE_SCORE]
+> [!TIP]
+> **Onde encontrar:** Abra seu site no Chrome (`http://localhost:5000`).
+> **Como fazer:** Clique com botão direito na página -> "Inspecionar" -> Vá na aba "Lighthouse" (pode estar escondida nas setas `>>`) -> Clique em "Analyze page load".
+> **O que capturar:** Os círculos coloridos com as notas (Performance, Accessibility, Best Practices, SEO). Idealmente > 90 verde.
+
+================================================================================
+5. DÉPLOIEMENT, GESTION CLOUD ET CI/CD
+================================================================================
+
+5.1. Infrastructures Cloud
+● Render : Hébergement principal du service web.
+● Neon : Base de données PostgreSQL serverless.
+● Cloudinary : CDN pour images et audio.
+
+5.2. Pipeline d'intégration et déploiement continu
+Chaque push sur GitHub déclenche automatiquement un build sur Render.
+
+--------------------------------------------------------------------------------
+> [!IMPORTANT]
+> COLOQUE AQUI UM PRINT DO DASHBOARD DO RENDER
+> Mostre que o deploy está "Live".
+--------------------------------------------------------------------------------
+
+[LOCAL PARA CAPTURA: RENDER_DEPLOY_DASHBOARD]
+> [!TIP]
+> **Onde encontrar:** Painel de controle do Render (dashboard.render.com).
+> **O que capturar:** A linha do serviço "Interchange" mostrando o status verde "Live" ou "Deploy Succeeded". Mostra que o app está online de verdade.
+
+5.3. Supervision et Maintenance
+L'utilisation de MongoDB permet de voir quels jeux sont les plus joués et où les utilisateurs rencontrent des difficultés.
+
+================================================================================
+6. BILAN, COMPÉTENCES ET PERSPECTIVES
+================================================================================
+
+6.1. Bilan personnel
+Ce projet m'a permis de maîtriser le cycle de vie complet d'une application professionnelle, de l'idée brute au déploiement sécurisé.
+
+6.2. Tableau de mise en relation des compétences
+[AQUI VAI O SEU QUADRO DE COMPETÊNCIAS DO TÍTULO CDA]
+
+6.3. Roadmap fonctionnelle
+● Version 2 : Mode Multijoueur en temps réel (Socket.io).
+● Version 3 : Application mobile native (React Native).
+
+================================================================================
+7. ANNEXES
+================================================================================
+● Liste complète des librairies (requirements.txt).
+● Guide d'installation rapide.
+● Lexique technique.
+
+--------------------------------------------------------------------------------
+> [!TIP]
+> AO COLAR NO WORD:
+> 1. Use fonte "Arial" ou "Calibri" tamanho 11.
+> 2. Coloque as capturas de tela nos locais indicados.
+> 3. Um dossiê de 60 páginas deve ter muito detalhe técnico e fotos grandes.
+--------------------------------------------------------------------------------
+
+[FIM DO DOCUMENTO]

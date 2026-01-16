@@ -1,22 +1,26 @@
-- rename dashboard to profile and put the logout inside of profile.
+Atue como um Engenheiro de Software Sênior e Escritor Técnico. Eu preciso que você reescreva as seções do meu dossiê de projeto CDA baseando-se no arquivo de exemplo [NOME_DO_ARQUIVO_MODELO.txt] que carreguei, mas utilizando os dados REAIS da minha aplicação que está aberta neste IDE.
 
-- page home wide blue
+Instruções Específicas:
 
-- quero poder colocar novas licoes audio e textos 
+Mantenha o tom: Use uma linguagem técnica, formal e acadêmica, similar ao dossiê do Fethi.
 
-e mais imagens e suas traducoes no jogo interativo diretamente na parte admin para nao precisar ir diretamente no codigo.
+Analise meu código: Examine meus arquivos de rotas, controllers e serviços para extrair as funcionalidades reais.
 
-- Take of this area : Ready to Start Your Language Journey?
-Join thousands of learners already improving their skills worldwide.
+Seção de User Stories: Gere uma tabela de User Stories (Como usuário, quero..., para...) baseada no que meu código realmente faz hoje.
 
-- add privacity policy and legal mentions
+Seção de Arquitetura: Descreva como organizei as pastas (ex: NestJS, React, ou a estrutura que encontrar) e explique a responsabilidade de cada camada.
 
+Regras de Negócio: Liste as validações que você encontrar no meu código (ex: campos obrigatórios, regras de senha, permissões de admin).
 
+Stack Técnica: Liste as tecnologias encontradas no meu package.json e justifique o uso de cada uma (Performance, Tipagem com TS, Segurança, etc).
 
-renforce email password
+Por favor, comece gerando o conteúdo para os capítulos 2.2 (User Stories) e 2.3 (Règles de gestion métier). Formate em Markdown para que eu possa copiar para o Word facilmente."
 
-and securise it. peça numero minimo de caracteres e caracteres especiais.
+Dicas para o Antigravity "dar o melhor de si":
+Abra os arquivos certos: Antes de colar o prompt, certifique-se de que os arquivos principais do seu programa (como o main.ts, app.js ou as pastas de routes) estejam abertos no editor ou selecionados como contexto.
 
-por exemplo na parte do interactive game tem um erro de segurança, se eu colocar o id da licao seguinte direto no navegador eu tenho acesso, nao pode ser assim, apenas tenho que ter acesso uma vez a primeira licao terminada. por exemple : corriger : game/7 do not go directly
+Peça por partes: Se o seu projeto for muito grande, a IA pode "alucinar" se tentar escrever 50 páginas de uma vez. Use o prompt acima para os primeiros capítulos e depois diga: "Agora faça o mesmo para a seção 3.1 (Stack Técnica) e 3.2 (Exemplos de código)".
 
+Use o "@" ou "#": Se o Antigravity suportar menções (como no Cursor ou VS Code AI), digite @ e selecione o arquivo do exemplo e a pasta do seu código para garantir que ele está lendo os arquivos corretos.
 
+O que você deve fazer após a IA responder: Basta copiar o texto gerado, ir no seu documento Word e usar a opção "Colar -> Manter apenas texto" ou "Mesclar formatação" para que ele herde o estilo visual do modelo original.

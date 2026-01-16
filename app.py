@@ -70,13 +70,16 @@ Talisman(app, content_security_policy=None)
 Session(app)
 
 # MongoDB Connection
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
+MONGO_URI = os.environ.get('MONGO_URI')
 MONGO_DB_NAME = 'interchange'
 
 try:
     # Set a very short timeout for MongoDB to prevent blocking the app
-    mongo_client = MongoClient(MONGO_HOST, MONGO_PORT, serverSelectionTimeoutMS=1000)
+    if MONGO_URI:
+        mongo_client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=1000)
+    else:
+        mongo_client = MongoClient('localhost', 27017, serverSelectionTimeoutMS=1000)
+        
     mongo_db = mongo_client[MONGO_DB_NAME]
     # Simple ping to check connection
     mongo_client.admin.command('ping')
