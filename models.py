@@ -16,6 +16,8 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_completed_level = db.Column(db.Integer, default=0)
     total_points = db.Column(db.Integer, default=0)
+    email_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed_on = db.Column(db.DateTime, nullable=True)
 
     def get_id(self):
         return str(self.id)  # Required for Flask-Login to load user

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"
+    style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f7f9; margin:0; padding:0;">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Account Confirmation – Confirmation de compte</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #34495e;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background: #27ae60;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        .separator {
+            border-top: 1px solid #e0e0e0;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Interchange! / Bienvenue sur Interchange !</h1>
+        </div>
+        <!-- English version -->
+        <div class="content">
+            <p>Hello,</p>
+            <p>Thank you for registering. To activate your account, click the button below:</p>
+            <p style="text-align:center;">
+                <a href="{{ confirm_url }}" class="button">Confirm Email</a>
+            </p>
+            <p>If the button does not work, copy and paste this link into your browser:</p>
+            <p><a href="{{ confirm_url }}">{{ confirm_url }}</a></p>
+            <p>This link expires in 1 hour.</p>
+        </div>
+        <div class="separator"></div>
+        <!-- French version -->
+        <div class="content">
+            <p>Bonjour,</p>
+            <p>Merci de vous être inscrit·e. Pour activer votre compte, cliquez sur le bouton ci‑dessous :</p>
+            <p style="text-align:center;">
+                <a href="{{ confirm_url }}" class="button">Confirmer l’e‑mail</a>
+            </p>
+            <p>Si le bouton ne fonctionne pas, copiez‑collez ce lien dans votre navigateur :</p>
+            <p><a href="{{ confirm_url }}">{{ confirm_url }}</a></p>
+            <p>Ce lien expire dans 1 heure.</p>
+        </div>
+        <div class="footer">
+            <p>© 2026 Interchange – All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

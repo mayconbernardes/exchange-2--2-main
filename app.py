@@ -1,5 +1,8 @@
 # app.py
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 import random
 import json
 
@@ -22,8 +25,9 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 from flask_caching import Cache
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from email_validator import validate_email, EmailNotValidError
+from itsdangerous import URLSafeTimedSerializer
 from werkzeug.exceptions import RequestEntityTooLarge
 from models import User, Flashcard, TextAudioLesson, InteractiveGame, db  # Ensure these models are in models.py
 from forms import UserProfileForm, FlashcardForm, LoginForm, RegistrationForm, LessonForm, GameForm, INTERESTS, LANGUAGES # Ensure these forms are in forms.py
@@ -57,6 +61,14 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 csrf = CSRFProtect(app)
+# Mail Configuration
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp-relay.brevo.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
+
 mail = Mail(app)
 limiter = Limiter(
     key_func=get_remote_address,
@@ -68,6 +80,35 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 socketio = SocketIO(app)
 Talisman(app, content_security_policy=None)
 Session(app)
+
+
+
+# Token Configuration
+app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT', 'very-important-salt-change-this')
+
+def generate_confirmation_token(email):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+
+def confirm_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(
+            token,
+            salt=app.config['SECURITY_PASSWORD_SALT'],
+            max_age=expiration
+        )
+    except:
+        return False
+    return email
+
+def send_confirmation_email(user_email):
+    token = generate_confirmation_token(user_email)
+    confirm_url = url_for('confirm_email', token=token, _external=True)
+    html = render_template('email_confirmation.html', confirm_url=confirm_url)
+    subject = "Confirmação de conta - Interchange"
+    msg = Message(subject, recipients=[user_email], html=html)
+    mail.send(msg)
 
 # MongoDB Connection
 MONGO_URI = os.environ.get('MONGO_URI')
@@ -140,6 +181,26 @@ def privacy():
 def legal():
     return render_template('legal.html')
 
+@app.route('/confirm/<token>')
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        flash('The confirmation link is invalid or has expired.', 'danger')
+        return redirect(url_for('login'))
+        
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.email_confirmed:
+        flash('Account already confirmed. Please login.', 'success')
+    else:
+        user.email_confirmed = True
+        user.confirmed_on = datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash('You have confirmed your account. Thanks!', 'success')
+        
+    return redirect(url_for('login'))
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -150,10 +211,13 @@ def register():
     
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password, email_confirmed=False)
         db.session.add(user)
         db.session.commit()
-        flash(get_t('auth_flash_register_success'), 'success')
+        
+        send_confirmation_email(user.email)
+        
+        flash(get_t('auth_flash_register_success') + ' Please check your email to confirm your account.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -163,6 +227,9 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
+            if not user.email_confirmed:
+                flash(get_t('auth_flash_email_not_confirmed'), 'warning')
+                return render_template('login.html', title=get_t('auth_login_title'), form=form)
             login_user(user, remember=form.remember.data)  # Add remember functionality here
             log_user_activity(user.id, "login", {"email": user.email})
             next_page = request.args.get('next')
