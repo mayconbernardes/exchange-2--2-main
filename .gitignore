@@ -3,19 +3,32 @@
 *.db           # General database files
 *.sql          # SQL dump files
 .env           # Environment variable files
+instance/      # Local Flask instance folder (contains DBs or secrets)
 
-# Python environments
+# Python environments & artifacts
 venv/
 env/
 myenv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
 flask_session/
+*.log
 
 # OS files
 .DS_Store
+.DS_Store?
 static/.DS_Store
 templates/.DS_Store
+Thmubs.db
+
+# IDEs/Editors
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # Documentation (Private)
 questions.md
