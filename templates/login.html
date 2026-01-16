@@ -22,12 +22,33 @@
                     <!-- Password Field -->
                     <div class="mb-3">
                         <label class="form-label">{{ t('form_password') }}</label>
-                        {{ form.password(class="form-control form-control-lg",
-                        placeholder=t('form_placeholder_login_password')) }}
+                        <div class="input-group">
+                            {{ form.password(class="form-control form-control-lg",
+                            placeholder=t('form_placeholder_login_password'), id="password-field") }}
+                            <button class="btn btn-outline-secondary" type="button" id="toggle-password">
+                                <i class="fas fa-eye" id="password-icon"></i>
+                            </button>
+                        </div>
                         {% if form.password.errors %}
                         <span class="text-danger">{{ form.password.errors[0] }}</span>
                         {% endif %}
                     </div>
+
+                    <script>
+                        document.getElementById('toggle-password').addEventListener('click', function () {
+                            const passwordField = document.getElementById('password-field');
+                            const icon = document.getElementById('password-icon');
+                            if (passwordField.type === 'password') {
+                                passwordField.type = 'text';
+                                icon.classList.remove('fa-eye');
+                                icon.classList.add('fa-eye-slash');
+                            } else {
+                                passwordField.type = 'password';
+                                icon.classList.remove('fa-eye-slash');
+                                icon.classList.add('fa-eye');
+                            }
+                        });
+                    </script>
 
                     <!-- Remember Me -->
                     <div class="mb-3 form-check">

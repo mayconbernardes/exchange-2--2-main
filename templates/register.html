@@ -32,8 +32,13 @@
                     <!-- Password Field -->
                     <div class="mb-3">
                         <label class="form-label">{{ t('form_password') }}</label>
-                        {{ form.password(class="form-control form-control-lg",
-                        placeholder=t('form_placeholder_password')) }}
+                        <div class="input-group">
+                            {{ form.password(class="form-control form-control-lg",
+                            placeholder=t('form_placeholder_password'), id="password-field") }}
+                            <button class="btn btn-outline-secondary" type="button" id="toggle-password">
+                                <i class="fas fa-eye" id="password-icon"></i>
+                            </button>
+                        </div>
                         {% if form.password.errors %}
                         <span class="text-danger">{{ form.password.errors[0] }}</span>
                         {% endif %}
@@ -42,12 +47,37 @@
                     <!-- Confirm Password Field -->
                     <div class="mb-3">
                         <label class="form-label">{{ t('form_confirm_password') }}</label>
-                        {{ form.confirm_password(class="form-control form-control-lg",
-                        placeholder=t('form_placeholder_confirm')) }}
+                        <div class="input-group">
+                            {{ form.confirm_password(class="form-control form-control-lg",
+                            placeholder=t('form_placeholder_confirm'), id="confirm-password-field") }}
+                            <button class="btn btn-outline-secondary" type="button" id="toggle-confirm-password">
+                                <i class="fas fa-eye" id="confirm-password-icon"></i>
+                            </button>
+                        </div>
                         {% if form.confirm_password.errors %}
                         <span class="text-danger">{{ form.confirm_password.errors[0] }}</span>
                         {% endif %}
                     </div>
+
+                    <script>
+                        function setupToggle(buttonId, fieldId, iconId) {
+                            document.getElementById(buttonId).addEventListener('click', function () {
+                                const field = document.getElementById(fieldId);
+                                const icon = document.getElementById(iconId);
+                                if (field.type === 'password') {
+                                    field.type = 'text';
+                                    icon.classList.remove('fa-eye');
+                                    icon.classList.add('fa-eye-slash');
+                                } else {
+                                    field.type = 'password';
+                                    icon.classList.remove('fa-eye-slash');
+                                    icon.classList.add('fa-eye');
+                                }
+                            });
+                        }
+                        setupToggle('toggle-password', 'password-field', 'password-icon');
+                        setupToggle('toggle-confirm-password', 'confirm-password-field', 'confirm-password-icon');
+                    </script>
 
                     <!-- Submit Button -->
                     <div class="d-grid">
