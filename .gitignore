@@ -1,9 +1,11 @@
 # Ignore database files
-*.sqlite3      # SQLite database files
-*.db           # General database files
-*.sql          # SQL dump files
-.env           # Environment variable files
-instance/      # Local Flask instance folder (contains DBs or secrets)
+*.sqlite3
+*.db
+*.sql
+# Environment variable files
+.env
+# Local Flask instance folder
+instance/
 
 # Python environments & artifacts
 venv/
