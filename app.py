@@ -51,6 +51,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
+app.config['REQUIRE_EMAIL_CONFIRMATION'] = os.environ.get('REQUIRE_EMAIL_CONFIRMATION', 'True') == 'True'
 
 # Initialize extensions
 db.init_app(app)
@@ -106,7 +107,7 @@ def send_confirmation_email(user_email):
     token = generate_confirmation_token(user_email)
     confirm_url = url_for('confirm_email', token=token, _external=True)
     html = render_template('email_confirmation.html', confirm_url=confirm_url)
-    subject = "Confirmação de conta - Interchange"
+    subject = get_t('mail_confirm_subject')
     msg = Message(subject, recipients=[user_email], html=html)
     mail.send(msg)
 
@@ -217,7 +218,7 @@ def register():
         
         send_confirmation_email(user.email)
         
-        flash(get_t('auth_flash_register_success') + ' Please check your email to confirm your account.', 'success')
+        flash(f"{get_t('auth_flash_register_success')} {get_t('auth_flash_check_email')}", 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -227,7 +228,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
-            if not user.email_confirmed:
+            if app.config['REQUIRE_EMAIL_CONFIRMATION'] and not user.email_confirmed:
                 flash(get_t('auth_flash_email_not_confirmed'), 'warning')
                 return render_template('login.html', title=get_t('auth_login_title'), form=form)
             login_user(user, remember=form.remember.data)  # Add remember functionality here
@@ -389,7 +390,7 @@ def game_start():
 def game_level(level_id):
     # Security check: sequential level access
     if level_id > current_user.last_completed_level + 1:
-        flash(f'Você precisa completar o nível {current_user.last_completed_level + 1} primeiro!', 'warning')
+        flash(get_t('game_level_locked').format(level=current_user.last_completed_level + 1), 'warning')
         return redirect(url_for('game_level', level_id=current_user.last_completed_level + 1))
     
     log_user_activity(current_user.id, "started_game_level", {"level_id": level_id})
@@ -470,7 +471,7 @@ def reset_game():
     current_user.total_points = 0
     db.session.commit()
     log_user_activity(current_user.id, "reset_game_progress")
-    return jsonify({"status": "success", "message": "Progresso reiniciado com sucesso!"})
+    return jsonify({"status": "success", "message": get_t('game_progress_reset_success')})
 
 @app.route('/admin')
 @login_required

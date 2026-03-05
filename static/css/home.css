@@ -5,6 +5,14 @@ body {
     font-family: 'Outfit', sans-serif !important;
 }
 
+/* Make the home page content span full viewport width */
+.main-content-wrapper {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
 /* Typography & Basics */
 .text-gradient {
     background: linear-gradient(135deg, #fff 0%, #a5ccff 100%);
