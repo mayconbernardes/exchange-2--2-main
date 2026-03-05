@@ -40,3 +40,8 @@ prompt.txt
 ProjetFinalCDA.txt
 paraReverDepois.txt
 modelo_projeto.md
+
+# Ignore all Markdown/TXT files except root README
+*.md
+*.txt
+!README.md
