@@ -35,12 +35,18 @@ jobs:
           echo "Tentando importar o app para ver erros de dependência:"
           python -c "import app; print('✅ App importado com sucesso!')"
 
-      - name: 🧪 Executar testes com pytest
+      - name: 🧪 Executar testes do Projeto Real
         env:
-          SECRET_KEY: test-secret-key
-          FLASK_ENV: testing
+          SECRET_KEY: "test-secret-key"
+          FLASK_ENV: "testing"
           TESTING: "true"
           DATABASE_URL: "sqlite:///:memory:"
           MONGO_URI: "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"
-          PYTHONPATH: .
-        run: python -m pytest tests/test_basic.py -v
+          MAIL_SERVER: "localhost"
+          MAIL_PORT: "8025"
+          MAIL_USE_TLS: "false"
+          MAIL_USERNAME: "test@example.com"
+          MAIL_PASSWORD: "password"
+          MAIL_DEFAULT_SENDER: "test@example.com"
+          PYTHONPATH: "."
+        run: python -m pytest tests/test_app_real.py -v
