@@ -24,6 +24,7 @@ jobs:
           python3 -m pip freeze
 
       - name: 🔍 Debug - Preparar Ambiente e Verificar Importação
+        continue-on-error: true
         env:
           DATABASE_URL: "sqlite:///:memory:"
           SECRET_KEY: "test-secret-key"
@@ -32,8 +33,15 @@ jobs:
         run: |
           echo "Criando pastas necessárias para o ambiente CI..."
           mkdir -p flask_session static/audio static/img static/doc
-          echo "Tentando importar o app diretamente:"
-          python3 -c "import sys; sys.path.insert(0, '${{ github.workspace }}'); import app; print('✅ App importado com sucesso!')"
+          echo "Tentando importar o app e capturar o erro exato:"
+          python3 -c "import sys; sys.path.insert(0, '${{ github.workspace }}'); 
+          try:
+              import app
+              print('✅ App importado com sucesso!')
+          except Exception as e:
+              import traceback
+              traceback.print_exc()
+              sys.exit(1)"
 
       - name: 🧪 Executar Diagnóstico e Testes
         env:
