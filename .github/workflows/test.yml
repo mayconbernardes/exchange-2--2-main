@@ -27,4 +27,5 @@ jobs:
           FLASK_ENV: testing
           TESTING: "true"
           DATABASE_URL: "sqlite:///:memory:"
-        run: pytest tests/ -v
+          PYTHONPATH: .
+        run: python -m pytest tests/ -v
