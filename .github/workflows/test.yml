@@ -35,7 +35,7 @@ jobs:
           echo "Tentando importar o app para ver erros de dependência:"
           python -c "import app; print('✅ App importado com sucesso!')"
 
-      - name: 🧪 Executar testes do Projeto Real
+      - name: 🧪 Executar Diagnóstico e Testes
         env:
           SECRET_KEY: "test-secret-key"
           FLASK_ENV: "testing"
@@ -49,4 +49,4 @@ jobs:
           MAIL_PASSWORD: "password"
           MAIL_DEFAULT_SENDER: "test@example.com"
           PYTHONPATH: "."
-        run: python -m pytest tests/test_app_real.py -v
+        run: python -m pytest tests/ -v
