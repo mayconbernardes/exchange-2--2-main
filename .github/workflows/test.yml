@@ -21,7 +21,18 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
-      - name: Executar testes com pytest
+      - name: 🔍 Debug - Verificar ambiente e importação
+        env:
+          DATABASE_URL: "sqlite:///:memory:"
+          SECRET_KEY: test-secret-key
+          PYTHONPATH: .
+        run: |
+          echo "Listando ficheiros no repositório:"
+          ls -R
+          echo "Tentando importar o app para ver erros de dependência:"
+          python -c "import app; print('✅ App importado com sucesso!')"
+
+      - name: 🧪 Executar testes com pytest
         env:
           SECRET_KEY: test-secret-key
           FLASK_ENV: testing
