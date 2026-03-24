@@ -21,19 +21,19 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
-      - name: 🔍 Debug - Verificar ambiente e importação
+      - name: 🔍 Debug - Preparar Ambiente e Verificar Importação
         env:
           DATABASE_URL: "sqlite:///:memory:"
-          SECRET_KEY: test-secret-key
-          PYTHONPATH: .
+          SECRET_KEY: "test-secret-key"
+          PYTHONPATH: "."
           MONGO_URI: "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"
         run: |
+          echo "Criando pastas necessárias para o ambiente CI..."
+          mkdir -p flask_session static/audio static/img static/doc
           echo "Listando ficheiros no repositório:"
           ls -R
-          echo "Versões das bibliotecas instaladas:"
-          pip show flask pytest
-          echo "Tentando importar o app para ver erros de dependência:"
-          python -c "import app; print('✅ App importado com sucesso!')"
+          echo "Tentando importar o app e capturar erros fatais:"
+          python -c "import sys; print('DEBUG Path:', sys.path); import app; print('✅ App importado com sucesso!')"
 
       - name: 🧪 Executar Diagnóstico e Testes
         env:
