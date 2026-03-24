@@ -79,7 +79,9 @@ limiter = Limiter(
 )
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 socketio = SocketIO(app)
-Talisman(app, content_security_policy=None)
+# Disable force_https in testing to avoid 302 redirects during tests
+is_testing = app.config.get('TESTING') or os.environ.get('FLASK_ENV') == 'testing'
+Talisman(app, content_security_policy=None, force_https=not is_testing)
 Session(app)
 
 
