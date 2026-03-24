@@ -18,11 +18,11 @@ def client():
         db.drop_all()
 
 def test_home_page(client):
-    """Verifica se a página inicial do projeto carrega."""
-    response = client.get('/')
+    """Verifica se a página inicial do projeto carrega (seguindo redirecionamentos)."""
+    response = client.get('/', follow_redirects=True)
     assert response.status_code == 200
 
 def test_login_page(client):
-    """Verifica se a página de login do projeto carrega."""
-    response = client.get('/login')
+    """Verifica se a página de login do projeto carrega (seguindo redirecionamentos)."""
+    response = client.get('/login', follow_redirects=True)
     assert response.status_code == 200

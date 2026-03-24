@@ -36,7 +36,18 @@ jobs:
           echo "Tentando importar o app rapidamente:"
           python3 -c "import sys; sys.path.insert(0, '${{ github.workspace }}'); import app; print('✅ App importado!')"
 
-      - name: 🧪 Executar Testes para o Júri
+      - name: 🧪 Executar Testes de Integração
         env:
+          SECRET_KEY: "test-secret-key"
+          FLASK_ENV: "testing"
+          TESTING: "true"
+          DATABASE_URL: "sqlite:///:memory:"
+          MONGO_URI: "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"
+          MAIL_SERVER: "localhost"
+          MAIL_PORT: "8025"
+          MAIL_USE_TLS: "false"
+          MAIL_USERNAME: "test@example.com"
+          MAIL_PASSWORD: "password"
+          MAIL_DEFAULT_SENDER: "test@example.com"
           PYTHONPATH: ${{ github.workspace }}
-        run: python3 -m pytest tests/test_projeto_juri.py -v
+        run: python3 -m pytest tests/ -v --tb=short
