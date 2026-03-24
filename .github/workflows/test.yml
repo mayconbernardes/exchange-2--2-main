@@ -31,17 +31,10 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
           MONGO_URI: "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"
         run: |
-          echo "Criando pastas necessárias para o ambiente CI..."
+          echo "Criando pastas para o ambiente CI..."
           mkdir -p flask_session static/audio static/img static/doc
-          echo "Tentando importar o app e capturar o erro exato:"
-          python3 -c "import sys; sys.path.insert(0, '${{ github.workspace }}'); 
-          try:
-              import app
-              print('✅ App importado com sucesso!')
-          except Exception as e:
-              import traceback
-              traceback.print_exc()
-              sys.exit(1)"
+          echo "Tentando importar o app rapidamente:"
+          python3 -c "import sys; sys.path.insert(0, '${{ github.workspace }}'); import app; print('✅ App importado!')"
 
       - name: 🧪 Executar Diagnóstico e Testes
         env:
@@ -57,4 +50,4 @@ jobs:
           MAIL_PASSWORD: "password"
           MAIL_DEFAULT_SENDER: "test@example.com"
           PYTHONPATH: ${{ github.workspace }}
-        run: python3 -m pytest tests/ -v --tb=long
+        run: python3 -m pytest tests/ -v --tb=short
