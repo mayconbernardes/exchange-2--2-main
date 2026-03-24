@@ -45,3 +45,4 @@ modelo_projeto.md
 *.md
 *.txt
 !README.md
+!requirements.txt
