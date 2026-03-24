@@ -26,6 +26,7 @@ jobs:
           DATABASE_URL: "sqlite:///:memory:"
           SECRET_KEY: test-secret-key
           PYTHONPATH: .
+          MONGO_URI: "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"
         run: |
           echo "Listando ficheiros no repositório:"
           ls -R
@@ -40,5 +41,6 @@ jobs:
           FLASK_ENV: testing
           TESTING: "true"
           DATABASE_URL: "sqlite:///:memory:"
+          MONGO_URI: "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"
           PYTHONPATH: .
         run: python -m pytest tests/ -v
