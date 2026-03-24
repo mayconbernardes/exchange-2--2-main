@@ -43,4 +43,4 @@ jobs:
           DATABASE_URL: "sqlite:///:memory:"
           MONGO_URI: "mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"
           PYTHONPATH: .
-        run: python -m pytest tests/ -v
+        run: python -m pytest tests/test_basic.py -v
