@@ -1,3 +1,6 @@
+import os
+os.environ['FLASK_ENV'] = 'testing'
+
 import pytest
 from app import app
 

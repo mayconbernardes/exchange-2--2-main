@@ -1,5 +1,7 @@
-import pytest
 import os
+os.environ['FLASK_ENV'] = 'testing'
+
+import pytest
 from app import app, db
 
 @pytest.fixture
